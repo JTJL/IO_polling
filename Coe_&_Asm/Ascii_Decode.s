@@ -61,19 +61,8 @@ Load_Data:
 
 	addi 	$t1, 	$t2,	-282 			# SPACE Judge
 	bne 	$t1, 	$zero, 	N_SPACE
-	addi 	$s2,	$s2, 	1
-	addi 	$t4, 	$zero, 	0x50 			# Judge if X reach 80(Dec) 
-	addi 	$t6,	$zero,	0x7f			# Get addr x 
-	and 	$t5, 	$s2,	$t6
-	bne		$t4,	$t5,	N_Vram_Y_Inc_1
-	addi 	$t6, 	$zero,	-128			# Set ffff_ff80, 127 (DEC_FORMAT)
-	and 	$s2, 	$s2,	$t6				# keep the Vram Y addr
-	addi 	$s2,	$s2, 	0x100  			# Addr Y + 1 
-N_Vram_Y_Inc_1:
-	sw 		$zero,	0($s2)					# store blank
-	add 	$zero,	$zero, 	$zero
-	lw 		$ra, 	0($sp)					# load back $ra
-	jr 		$ra
+ 	add 	$t2,	$zero,	$zero
+ 	j  		Print_Ascii
 N_SPACE:
 	addi 	$t1, 	$t2, 	-283			# ENTER Judge 
 	bne		$t1, 	$zero,  N_ENTER  
@@ -83,18 +72,15 @@ N_SPACE:
 	ori		$s2,	$s2,	0x4f 			# Set X at 79 (DEC_FORMAT)
 	#addi 	$s2, 	$s2,	0x100 			# Y + 1 	
 	addi 	$t2, 	$zero,	0x42d			# Write 2d RED'-' to the beginning of the line
-	j Print_Ascii
-	#sw 	$t0, 	0($s2)					# Write 2d '-' to the beginning of the line
-	#add 	$zero,	$zero, 	$zero
-	#lw 	$ra,	0($sp)
-	#jr 		$ra
+	j Print_Ascii							# We do not enter the next line, do it with "writing '-'"
+
 N_ENTER:
 	addi 	$t1, 	$t2, 	-285 			# BACKSPACE Judge
 	bne		$t1, 	$zero,  N_BKSP 
 	sw 		$zero,	0($s2)					# store blank
 	#beq 	$s2, 	$zero,	
 	addi 	$s2,	$s2,	-1 				# Addr X - 1 
-											# Judge if X reaches -1 ; Not done yet 
+											
 N_BKSP:
 	lw 		$ra, 	0($sp)					# load back $ra
 	add 	$zero,	$zero, 	$zero
@@ -105,16 +91,65 @@ Print_Ascii:
 	addi 	$t4, 	$zero, 	0x50 			# Judge if X reach 80(DEC_FORMAT) 
 	addi 	$t6,	$zero,	0x7f			# Get addr x 
 	and 	$t5, 	$s2,	$t6
-	bne		$t4,	$t5,	N_Vram_Y_Inc_2
+	bne		$t4,	$t5,	Write_Screen 	# No need for Y + 1 
 	addi 	$t6, 	$zero,	-128			# Set ffff_ff80, 127 (DEC_FORMAT)
-	and 	$s2, 	$s2,	$t6				# keep the Vram Y addr
+	and 	$s2, 	$s2,	$t6				# keep the Vram Y addr, Clr X
 	addi 	$s2,	$s2, 	0x100  			# Addr Y + 1 
+	ori 	$t4,	$zero,	0x3c00
+	bne		$s2,	$t4,	Write_Screen 	# No need for Clr_S
 	add 	$zero,	$zero, 	$zero	
-N_Vram_Y_Inc_2:
+	jal 	Clr_Screen
+	add 	$zero,	$zero, 	$zero	
+Write_Screen:
 	sw 		$t2, 	0($s2)					# Write Screen
 	add 	$zero,	$zero, 	$zero
 	lw 		$ra, 	0($sp)					# load back $ra
 	jr 		$ra
+
+
+##############
+# 	Function: Clear Screen
+#
+# 	Return	: None
+##############
+Clr_Screen:			
+	addi 	$sp,	$sp, 	-24						# DEC_FORMAT
+	sw		$t0,	0x0($sp)
+	sw		$t1,	0x4($sp)
+	sw		$t2,	0x8($sp)
+	sw		$t3,	0xc($sp)
+	sw		$t4,	0x10($sp)
+	sw 		$t5,	0x14($sp)	
+	sw		$t6,	0x18($sp)
+
+	ori		$t0,	$zero, 	0x12c0					# Condition: 4800 DEC_FORMAT
+	ori 	$t1,	$zero,	0x20 	 				# Blank
+	add 	$t2, 	$zero,	$zero 					# Counter 
+	lui 	$t3,	0xc
+	
+Loop_Clr_S:
+	addi 	$t3,	$t3,	1						# Addr X + 1
+	addi 	$t4, 	$zero, 	0x50 					# Judge if X reach 80(DEC_FORMAT) 
+	addi 	$t6,	$zero,	0x7f					# Get addr x 
+	and 	$t5, 	$s2,	$t6
+	bne		$t4,	$t5, 	N_CLR_Y_Inc
+	addi 	$t6, 	$zero,	-128					# Set ffff_ff80, 127 (DEC_FORMAT)
+	and 	$t3, 	$t3,	$t6						# keep the Vram Y addr, Clr X
+	addi 	$t3,	$t3, 	0x100  					# Addr Y + 1 
+N_CLR_Y_Inc:
+	sw 		$t1,	0($t3)							# Clr this point
+	addi 	$t2,	$t2,	1 						# Counter = Counter + 1 
+	bne 	$t2, 	$t0,	Loop_Clr_S				# Judgment if $t2(Counter) equals $t0(Limit)
+
+	lw		$t6,	0x18($sp)
+	lw		$t5,	0x14($sp)
+	lw		$t4,	0x10($sp)
+	lw		$t3,	0xc($sp)
+	lw		$t2,	0x8($sp)
+	lw		$t1,	0x4($sp)
+	lw		$t0,	0x0($sp)
+	add 	$zero, 	$zero,	$zero
+	jr		$ra
 
 
 
