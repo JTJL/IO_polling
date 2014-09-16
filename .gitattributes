@@ -2,13 +2,7 @@
 * text=auto
 
 
-*.rar
-*.RAR
-*.zip
-*.ZIP
-*.mp4
-*.MP4
-IO_Polling/
+
 
 
 # Custom for Visual Studio
@@ -30,4 +24,6 @@ IO_Polling/
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+*.v	diff=astextplain
+*.V	diff=astextplain
 
