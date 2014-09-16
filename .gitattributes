@@ -26,4 +26,8 @@
 *.RTF	 diff=astextplain
 *.v	diff=astextplain
 *.V	diff=astextplain
+*.S	diff=astextplain
+*.s	diff=astextplain
+*.asm	diff=astextplain
+*.ASM 	diff=astextplain
 
