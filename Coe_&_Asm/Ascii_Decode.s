@@ -2,11 +2,12 @@
 #
 #	Numbase is assumed to be Hex except specially declared
 #		
+#	Updated Date 	: Sept 16th
+#
+#	Author 			: S.k.a.r.
 #	
-#
-#
-#
-#
+#	Last revision	: Comment added
+#	
 #############################################################################
 
 .text                           # code segment
