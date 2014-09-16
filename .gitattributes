@@ -1,6 +1,16 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+
+*.rar
+*.RAR
+*.zip
+*.ZIP
+*.mp4
+*.MP4
+IO_Polling/
+
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 *.sln    merge=union
@@ -20,3 +30,4 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
