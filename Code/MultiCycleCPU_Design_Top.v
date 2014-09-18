@@ -191,7 +191,7 @@ module Top_Muliti_IOBUS(
                                 .Test_data2     (Inst), //Inst
                                 .Test_data3     (addr_bus), //addr_bus
                                 .Test_data4     (Cpu_data2bus), //Cpu_data2bus;
-                                .Test_data5     (Cpu_data4bus), //Cpu_data4bus;
+                                .Test_data5     (Vram_W_Addr_x_y), //Cpu_data4bus;
                                 .Test_data6     (key_d),
                                 //pc;
                                 .disp_num       (disp_num)
