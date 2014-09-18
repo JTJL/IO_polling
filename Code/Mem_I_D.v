@@ -36,7 +36,7 @@ module Mem_I_D(
 
 
 	initial begin
-		$readmemb("../Coe_&_Asm/Ascii_Decode_2.coe",RAM);
+		$readmemb("../Coe_&_Asm/Ascii_Decode.coe",RAM);
 	end
 
 	always @(posedge clk ) begin
