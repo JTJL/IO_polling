@@ -103,6 +103,10 @@ Print_Ascii:
 	lui		$a1,	0xc
 	ori 	$a1,	$a1,	0xf20
 	jal 	Draw_Block
+	add 	$zero,	$zero,	$zero
+	addi 	$a0,	$zero,	5
+	addi 	$a1,	$a1,	0x202
+	jal 	Draw_Block
 	add 	$zero,	$zero, 	$zero	
 Write_Screen:
 	sw 		$t2, 	0($s2)						# Write Screen
@@ -240,27 +244,30 @@ Draw_Block:
 CLR_BLOCK:
 	ori 	$v0,	$zero,	0x1 				# Set return number to 1 <==> Failure
 	andi	$t0,	$a0, 	0x1c 				# To get pattern
+#	srl 	$t0,	$t0,	2
 	andi 	$t1,	$a0, 	0x3	 				# To get rotation
+	add 	$t1,	$t1,	$t1	
+	add 	$t1,	$t1,	$t1
 
-	la 		$t2,	Case_Pattern_Begin
-	add 	$t2,	$t2,	$t0 				# Add $t0 as offset
-	jr 		$t2						
+#	la 		$t2,	Case_Pattern_Begin
+#	add 	$t2,	$t2,	$t0 				# Add $t0 as offset
+#	jr 		$t2						
 
 Case_Pattern_Begin: 				
-	beq		$zero,	$zero,	P_LINE				# Pattern  ####          	Pattern_No = 000
-												#
-
-	beq 	$zero,	$zero,	P_ARROW				# Pattern   #				Pattern_No = 001
-												#          ###
-
-	beq 	$zero,	$zero,  P_SQUARE			# Pattern  ##				Pattern_No = 010
-												#          ##
-
-    beq 	$zero,	$zero,  P_RIGHTL			# Pattern  #				Pattern_No = 011
-    											#          ###
-
-	beq 	$zero,	$zero,  P_LEFTL				# Pattern    #				Pattern_No = 100
-												# 		   ###
+	beq		$t0,	$zero,	P_LINE				# Pattern  ####          	Pattern_No = 000_00
+												
+	addi	$t3,	$zero,	0x4 											
+	beq 	$t0,	$t3,	P_ARROW				# Pattern   #				Pattern_No = 001_00
+												           ###
+	addi	$t3,	$zero,	0x8 											
+	beq 	$t0,	$t3,  P_SQUARE				# Pattern  ##				Pattern_No = 010_00
+												           ##
+    addi	$t3,	$zero,	0xc
+    beq 	$t0,	$t3,  P_RIGHTL				# Pattern  #				Pattern_No = 011_00
+    											           ###
+    addi	$t3,	$zero,	0x10
+	beq 	$t0,	$t3,  P_LEFTL				# Pattern    #				Pattern_No = 100_00
+												  		   ###
 P_LINE:
 	la		$t2,	Case_LINE_Rotation
 	add 	$t2,	$t2,	$t1					# Add $t1 as offset
@@ -300,9 +307,9 @@ P_ARROW:
 	jr 		$t2
 Case_ARROW_Rotation:
 	beq 	$zero,	$zero, 	ARROW_DOWN			
-	beq		$zero,	$zero,  ARROW_RIGHT
-	beq		$zero,	$zero,  ARROW_UP
 	beq		$zero,	$zero,  ARROW_LEFT
+	beq		$zero,	$zero,  ARROW_UP
+	beq		$zero,	$zero,  ARROW_RIGHT
 
 ARROW_DOWN:										# ARROW: 	###
 															 #
