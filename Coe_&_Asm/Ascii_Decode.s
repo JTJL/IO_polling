@@ -1,26 +1,26 @@
 #############################################################################
-#
-#	Numbase is assumed to be Hex except specially declared
-#		
-#	Updated Date 	: Sept 16th
-#
-#	Author 			: S.k.a.r.
-#	
-#	Last revision	: Comment added
-#	
+##
+##	Numbase is assumed to be Hex except specially declared
+##		
+##	Updated Date 	: Sept 16th
+##
+##	Author 			: S.k.a.r.
+##	
+##	Last revision	: Draw_Win added and Block display Tested
+##	
 #############################################################################
 
 .text                           # code segment
-	la 		$s3,	Ascii_code				# Ascii_Data_BaseAddr, Actually implemented by lui and ori
-	addi 	$s0, 	$zero, 	-12288			# Ps2_addr		Radix: DEC_FORMAT
-	addi 	$s1, 	$zero, 	-512			# Sev_seg_addr	Radix: DEC_FORMAT
-	lui		$s2, 	0xc  					# VRam_addr
+	la 		$s3,	Ascii_code					# Ascii_Data_BaseAddr, Actually implemented by lui and ori
+	addi 	$s0, 	$zero, 	-12288				# Ps2_addr		Radix: DEC_FORMAT
+	addi 	$s1, 	$zero, 	-512				# Sev_seg_addr	Radix: DEC_FORMAT
+	lui		$s2, 	0xc  						# VRam_addr
 	ori 	$s2,	$s2, 	0x101
-	ori 	$sp,	$zero,	0x4000			# Stack from 0x0000_4000 to 0x0000_0000
-	ori  	$t0,	$zero, 	0x17f			# 'A' ascii 
-	ori  	$t1,	$zero, 	0x200			# 'B' ascii 
+	ori 	$sp,	$zero,	0x4000				# Stack from 0x0000_4000 to 0x0000_0000
+	ori  	$t0,	$zero, 	0x27f				# 'A' ascii 
+	ori  	$t1,	$zero, 	0x27f				# 'B' ascii 
 
-	sw 		$t0,	-1($s2)					# Write 'A' and 'B'
+	sw 		$t0,	-1($s2)						# Write 'A' and 'B'
 	add 	$zero,	$zero, 	$zero
 	sw 		$t1,	0($s2)
 	add 	$zero,	$zero, 	$zero
@@ -28,82 +28,82 @@
 Polling:
 	lw 	 	$t0, 	0($s0)
 	andi 	$t1,	$t0, 	0x100
-	beq  	$t1, 	$zero,  Polling			# Ps2_ready
+	beq  	$t1, 	$zero,  Polling				# Ps2_ready
 	jal 	Scan2Ascii
-	sw 	 	$t0, 	0($s1)					# Write Seven-Seg
+	sw 	 	$t0, 	0($s1)						# Write Seven-Seg
 	#addi 	$t0,	$zero, 	1
-	#beq 	$v0,	$t0, 	TERIS_GAME		# Enter the game
+	#beq 	$v0,	$t0, 	TERIS_GAME			# Enter the game
 	j 		Polling
 
 Scan2Ascii:
 
-	sw 		$ra, 	0($sp)					## You gotta store something, say ra
+	sw 		$ra, 	0($sp)						## You gotta store something, say ra
 	ori 	$t2,	$zero,	0xf0
 	andi 	$t1, 	$t0,	0xff
-	bne		$t1,	$t2,	Load_Data		# 0xF0 Detection 
+	bne		$t1,	$t2,	Load_Data			# 0xF0 Detection 
 Read_Bk_Code:
-	lw	 	$t0, 	0($s0)					# Read Break Code
+	lw	 	$t0, 	0($s0)						# Read Break Code
 	andi 	$t1,	$t0, 	0x100
-	beq  	$t1, 	$zero,  Read_Bk_Code	# Ps2_ready
-	sw		$t0, 	0($s1)					# Write Seven-Seg
+	beq  	$t1, 	$zero,  Read_Bk_Code		# Ps2_ready
+	sw		$t0, 	0($s1)						# Write Seven-Seg
 	add 	$zero,	$zero, 	$zero
-	lw 		$ra, 	0($sp)					# load back $ra
+	lw 		$ra, 	0($sp)						# load back $ra
 	jr 		$ra
 
 Load_Data:
 	add 	$t3, 	$t1,	$t1
-	add 	$t3, 	$t3,	$t3 			# Shift Scan Code left 2 bits
-	add 	$a0, 	$s3,	$t3				# Cal Addr with Scan Code as an offset 	
+	add 	$t3, 	$t3,	$t3 				# Shift Scan Code left 2 bits
+	add 	$a0, 	$s3,	$t3					# Cal Addr with Scan Code as an offset 	
 	lw		$t2,	0($a0)
-	andi 	$t1, 	$t2,	0x100			# Op_key has eighth bit high
-	beq  	$t1, 	$zero,	Print_Ascii		# Not an Op_key
+	andi 	$t1, 	$t2,	0x100				# Op_key has eighth bit high
+	beq  	$t1, 	$zero,	Print_Ascii			# Not an Op_key
 
-	addi 	$t1, 	$t2,	-282 			# SPACE Judge
+	addi 	$t1, 	$t2,	-282 				# SPACE Judge
 	bne 	$t1, 	$zero, 	N_SPACE
  	add 	$t2,	$zero,	$zero
  	j  		Print_Ascii
 N_SPACE:
-	addi 	$t1, 	$t2, 	-283			# ENTER Judge 
-	bne		$t1, 	$zero,  N_ENTER  
-	addi 	$t6, 	$zero,	-128 			# Set ffff_ff80
+	addi 	$t1, 	$t2, 	-283				# ENTER Judge 
+	bne		$t1, 	$zero,  N_ENTER  	
+	addi 	$t6, 	$zero,	-128 				# Set ffff_ff80
 	#andi 	$t5, 	$s2,	0x7f
-	and 	$s2, 	$s2,	$t6				# Enter
-	ori		$s2,	$s2,	0x4f 			# Set X at 79 (DEC_FORMAT)
-	#addi 	$s2, 	$s2,	0x100 			# Y + 1 	
-	addi 	$t2, 	$zero,	0x42d			# Write 2d RED'-' to the beginning of the line
-	j Print_Ascii							# We do not enter the next line, do it with "writing '-'"
+	and 	$s2, 	$s2,	$t6					# Enter
+	ori		$s2,	$s2,	0x4f 				# Set X at 79 (DEC_FORMAT)
+	#addi 	$s2, 	$s2,	0x100 				# Y + 1 	
+	addi 	$t2, 	$zero,	0x42d				# Write 2d RED'-' to the beginning of the line
+	j Print_Ascii								# We do not enter the next line, do it with "writing '-'"
 
 N_ENTER:
-	addi 	$t1, 	$t2, 	-285 			# BACKSPACE Judge
+	addi 	$t1, 	$t2, 	-285 				# BACKSPACE Judge
 	bne		$t1, 	$zero,  N_BKSP 
-	sw 		$zero,	0($s2)					# store blank
+	sw 		$zero,	0($s2)						# store blank
 	#beq 	$s2, 	$zero,	
-	addi 	$s2,	$s2,	-1 				# Addr X - 1 
+	addi 	$s2,	$s2,	-1 					# Addr X - 1 
 											
-N_BKSP:
-	lw 		$ra, 	0($sp)					# load back $ra
+N_BKSP:	
+	lw 		$ra, 	0($sp)						# load back $ra
 	add 	$zero,	$zero, 	$zero
 	jr 		$ra
 
 Print_Ascii:
 	addi 	$s2,	$s2, 	1
-	addi 	$t4, 	$zero, 	0x50 			# Judge if X reach 80(DEC_FORMAT) 
-	addi 	$t6,	$zero,	0x7f			# Get addr x 
+	addi 	$t4, 	$zero, 	0x50 				# Judge if X reach 80(DEC_FORMAT) 
+	addi 	$t6,	$zero,	0x7f				# Get addr x 
 	and 	$t5, 	$s2,	$t6
-	bne		$t4,	$t5,	Write_Screen 	# No need for Y + 1 
-	addi 	$t6, 	$zero,	-128			# Set ffff_ff80, 127 (DEC_FORMAT)
-	and 	$s2, 	$s2,	$t6				# keep the Vram Y addr, Clr X
-	addi 	$s2,	$s2, 	0x100  			# Addr Y + 1 
+	bne		$t4,	$t5,	Write_Screen 		# No need for Y + 1 
+	addi 	$t6, 	$zero,	-128				# Set ffff_ff80, 127 (DEC_FORMAT)
+	and 	$s2, 	$s2,	$t6					# keep the Vram Y addr, Clr X
+	addi 	$s2,	$s2, 	0x100  				# Addr Y + 1 
 	lui		$t4,	0xc
 	ori 	$t4,	$t4,	0x3c00
-	bne		$s2,	$t4,	Write_Screen 	# No need for Clr_S
+	bne		$s2,	$t4,	Write_Screen 		# No need for Clr_S
 	add 	$zero,	$zero, 	$zero	
 	jal 	Clr_Screen
 	add 	$zero,	$zero, 	$zero	
 Write_Screen:
-	sw 		$t2, 	0($s2)					# Write Screen
+	sw 		$t2, 	0($s2)						# Write Screen
 	add 	$zero,	$zero, 	$zero
-	lw 		$ra, 	0($sp)					# load back $ra
+	lw 		$ra, 	0($sp)						# load back $ra
 	jr 		$ra
 
 
@@ -114,13 +114,13 @@ Write_Screen:
 ##############
 Clr_Screen:			
 	addi 	$sp,	$sp, 	-28						# DEC_FORMAT
-	sw		$t0,	0x0($sp)
-	sw		$t2,	0x4($sp)
-	sw		$t3,	0x8($sp)
-	sw		$t4,	0xc($sp)
-	sw 		$t5,	0x10($sp)	
-	sw		$t6,	0x14($sp)
 	sw 		$ra,	0x18($sp)
+	sw		$t6,	0x14($sp)
+	sw 		$t5,	0x10($sp)
+	sw		$t4,	0xc($sp)
+	sw		$t3,	0x8($sp)
+	sw		$t2,	0x4($sp)
+	sw		$t0,	0x0($sp)
 
 	ori		$t0,	$zero, 	0x12c0					# Condition: 4800 DEC_FORMAT
 	and 	$t2, 	$zero,	$zero 					# Counter 
@@ -145,24 +145,25 @@ N_CLR_Y_Inc:
 
 	jal 	Draw_Win
 
-	lw 		$ra,	0x18($sp)
-	lw		$t6,	0x14($sp)
-	lw		$t5,	0x10($sp)
-	lw		$t4,	0xc($sp)
-	lw		$t3,	0x8($sp)
-	lw		$t2,	0x4($sp)
+
 	lw		$t0,	0x0($sp)
+	lw		$t2,	0x4($sp)
+	lw		$t3,	0x8($sp)
+	lw		$t4,	0xc($sp)
+	lw		$t5,	0x10($sp)
+	lw		$t6,	0x14($sp)
+	lw 		$ra,	0x18($sp)
 	addi 	$sp,	$sp, 	28
 	add 	$zero, 	$zero,	$zero
 	jr		$ra
 
 Draw_Win:  											# Window limit X in [1F:2D], Y in [0E:2D]
 	addi 	$sp,	$sp,	-16
-	sw 		$t0,	0x0($sp)
-	sw 		$t1,	0x4($sp)
-	sw 		$t2,	0x8($sp)
-	sw 		$t3,	0xc($sp)
 	sw 		$ra,	0x10($sp)
+	sw 		$t3,	0xc($sp)
+	sw 		$t2,	0x8($sp)
+	sw 		$t1,	0x4($sp)
+	sw 		$t0,	0x0($sp)
 
 	lui		$t0,	0xc
 	lui		$t1,	0xc
@@ -193,11 +194,11 @@ Loop_Draw_Col:
 	addi	$t1,	$t1,	0x100
 	bne 	$t0,	$t3, 	Loop_Draw_Col
 
-	lw 		$ra,	0x10($sp)
-	lw 		$t3,	0xc($sp)
-	lw 		$t2,	0x8($sp)
-	lw 		$t1,	0x4($sp)
 	lw 		$t0,	0x0($sp)
+	lw 		$t1,	0x4($sp)
+	lw 		$t2,	0x8($sp)
+	lw 		$t3,	0xc($sp)
+	lw 		$ra,	0x10($sp)
 	addi	$sp,	$sp,	16
 	jr 		$ra
 
