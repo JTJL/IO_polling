@@ -17,8 +17,8 @@
 	lui		$s2, 	0xc  					# VRam_addr
 	ori 	$s2,	$s2, 	0x101
 	ori 	$sp,	$zero,	0x4000			# Stack from 0x0000_4000 to 0x0000_0000
-	ori  	$t0,	$zero, 	0x141			# 'A' ascii 
-	ori  	$t1,	$zero, 	0x242			# 'B' ascii 
+	ori  	$t0,	$zero, 	0x17f			# 'A' ascii 
+	ori  	$t1,	$zero, 	0x200			# 'B' ascii 
 
 	sw 		$t0,	-1($s2)					# Write 'A' and 'B'
 	add 	$zero,	$zero, 	$zero
