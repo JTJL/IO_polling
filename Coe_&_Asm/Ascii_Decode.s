@@ -99,14 +99,27 @@ Print_Ascii:
 	bne		$s2,	$t4,	Write_Screen 		# No need for Clr_S
 	add 	$zero,	$zero, 	$zero	
 	jal 	Clr_Screen
+
+	############################################ 	This is only for Test
 	and 	$a0,	$zero,	$zero
 	lui		$a1,	0xc
 	ori 	$a1,	$a1,	0xf20
 	jal 	Draw_Block
 	add 	$zero,	$zero,	$zero
-	addi 	$a0,	$zero,	5
-	addi 	$a1,	$a1,	0x202
+	addi 	$a0,	$a0,	5
+	addi 	$a1,	$a1,	0x302
 	jal 	Draw_Block
+	addi 	$a0,	$a0,	5
+	addi 	$a1,	$a1,	0x302
+	jal 	Draw_Block
+	addi 	$a0,	$a0,	5
+	addi 	$a1,	$a1,	0x302
+	jal 	Draw_Block
+	addi 	$a0,	$a0,	1
+	addi 	$a1,	$a1,	0x302
+	jal 	Draw_Block
+	#######################################################################
+
 	add 	$zero,	$zero, 	$zero	
 Write_Screen:
 	sw 		$t2, 	0($s2)						# Write Screen
