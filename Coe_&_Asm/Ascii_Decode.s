@@ -156,7 +156,7 @@ N_CLR_Y_Inc:
 	add 	$zero, 	$zero,	$zero
 	jr		$ra
 
-Draw_Win:
+Draw_Win:  											# Window limit X in [1F:2D], Y in [0E:2D]
 	addi 	$sp,	$sp,	-16
 	sw 		$t0,	0x0($sp)
 	sw 		$t1,	0x4($sp)
@@ -167,10 +167,10 @@ Draw_Win:
 	lui		$t0,	0xc
 	lui		$t1,	0xc
 	lui		$t3,	0xc
-	ori		$t0,	$t0,	0x0d1e				# UpRow Addr
-	ori		$t1,	$t1,	0x2e1e				# DownRow Addr
-	ori		$t2,	$zero,	0x12d				# Char '-'
-	ori		$t3,	$t3,	0x0d2f				# Row Limit
+	ori		$t0,	$t0,	0x0d1e					# UpRow Addr
+	ori		$t1,	$t1,	0x2e1e					# DownRow Addr
+	ori		$t2,	$zero,	0x12d					# Char '-'
+	ori		$t3,	$t3,	0x0d2f					# Row Limit
 Loop_Draw_Row:
 	sw		$t2,	0($t0)
 	sw		$t2,	0($t1)
@@ -182,10 +182,10 @@ Loop_Draw_Row:
 	lui		$t0,	0xc
 	lui		$t1,	0xc
 	lui 	$t3,	0xc
-	ori		$t0,	$t0,	0x0e1e				# RightColAddr
-	ori		$t1,	$t1,	0x0e2e				# LeftCol Addr 
-	ori		$t2,	$zero,	0x17c				# Char '|'	
-	ori		$t3,	$t3, 	0x2e1e				# Col_Limit
+	ori		$t0,	$t0,	0x0e1e					# RightColAddr
+	ori		$t1,	$t1,	0x0e2e					# LeftCol Addr 
+	ori		$t2,	$zero,	0x17c					# Char '|'	
+	ori		$t3,	$t3, 	0x2e1e					# Col_Limit
 Loop_Draw_Col:
 	sw		$t2,	0($t0)
 	sw		$t2,	0($t1)
