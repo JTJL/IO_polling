@@ -64,9 +64,9 @@ LINE_HORIZONTAL:
 	beq		$t3,	$zero, 	RETURN
 	and 	$v0,	$zero,	$zero
 	sw 		$s0,	0($a1)
+	sw 		$s0,	1($a1)
 	sw 		$s0,	2($a1)
 	sw 		$s0,	3($a1)
-	sw 		$s0,	4($a1)
 	j 		RETURN
 
 LINE_VERTICAL:
