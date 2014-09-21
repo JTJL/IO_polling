@@ -187,11 +187,11 @@ module Top_Muliti_IOBUS(
                                 .Test           (SW_OK[7:5]),
                                 .disp_cpudata   (Peripheral_in), //CPU data output
                                 .Test_data0     (pc),
-                                .Test_data1     (ram_data_out), //counter
+                                .Test_data1     (counter_out), //counter
                                 .Test_data2     (Inst), //Inst
                                 .Test_data3     (addr_bus), //addr_bus
                                 .Test_data4     (Cpu_data2bus), //Cpu_data2bus;
-                                .Test_data5     (Cpu_data4bus), //Cpu_data4bus;
+                                .Test_data5     ({27'b0,counter_we, 3'b0,counter_OUT0}), //Cpu_data4bus;
                                 .Test_data6     (key_d),
                                 //pc;
                                 .disp_num       (disp_num)

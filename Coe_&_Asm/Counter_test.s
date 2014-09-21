@@ -20,22 +20,24 @@
 	sw 		$t1,	0($s2)
 	add 	$zero,	$zero, 	$zero
 
-	lui		$t6,	0x8000
-	addi 	$t7,	$zero,	0x7fff
+	
+
+	addi 	$t7,	$zero,	-100
 	addi	$t0,	$zero,	0x3
 	sw		$t0,	0($s1)						# Set counter_set = 11
 	add 	$zero,	$zero, 	$zero
 	sw 		$zero,	4($s1)						# Set Control signal i.e. choose mode 00
-	addi	$t0, 	$zero,	0x3f0
+	addi	$t0, 	$zero,	0x7ff0
 	sw		$t0,	0($s1) 						# Set counter chanel 00
 	add 	$zero,	$zero, 	$zero	
 	sw 		$t7,	4($s1)						# Turn counter on
 Polling:
+	lui		$t6,	0x8000
 	lw		$t1,	0($s1)
+	add 	$zero,	$zero,	$zero
 	and 	$t2, 	$t1,	$t6
 	beq 	$t2,	$zero,	Polling
 	addi	$t3,	$zero,	0x461
-	addi	$s2,	$s2,	0x1
 	addi 	$s2,	$s2, 	1
 	addi 	$t4, 	$zero, 	0x50 				# Judge if X reach 80(DEC_FORMAT) 
 	addi 	$t6,	$zero,	0x7f				# Get addr x 
@@ -50,9 +52,15 @@ Polling:
 Write_Screen:
 	sw		$t3,	0($s2)
 	add 	$zero,	$zero, 	$zero	
-	sw		$t0,	0($s1) 						# Set counter chanel 00
+	add 	$zero,	$zero,	$zero
+	addi 	$t7,	$zero,	0x7ffc
+	sw		$t7,	0($s1) 						# Set counter chanel 00
 	add 	$zero,	$zero, 	$zero
+	add 	$zero,	$zero,	$zero
+	addi 	$t7,	$zero,	-1000
 	sw 		$t7,	4($s1)						# Turn counter on
+	add 	$zero,	$zero,	$zero
+	add 	$zero,	$zero,	$zero
 	#addi 	$t0,	$zero, 	1
 	#beq 	$v0,	$t0, 	TERIS_GAME			# Enter the game
 	j 		Polling
