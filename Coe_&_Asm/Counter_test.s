@@ -34,8 +34,20 @@ Polling:
 	lw		$t1,	0($s1)
 	and 	$t2, 	$t1,	$t6
 	beq 	$t2,	$zero,	Polling
-	addi	$t3,	$zero,	0x47f
+	addi	$t3,	$zero,	0x461
 	addi	$s2,	$s2,	0x1
+	addi 	$s2,	$s2, 	1
+	addi 	$t4, 	$zero, 	0x50 				# Judge if X reach 80(DEC_FORMAT) 
+	addi 	$t6,	$zero,	0x7f				# Get addr x 
+	and 	$t5, 	$s2,	$t6
+	bne		$t4,	$t5,	Write_Screen 		# No need for Y + 1 
+	addi 	$t6, 	$zero,	-128				# Set ffff_ff80, 127 (DEC_FORMAT)
+	and 	$s2, 	$s2,	$t6					# keep the Vram Y addr, Clr X
+	addi 	$s2,	$s2, 	0x100  				# Addr Y + 1 
+	lui		$t4,	0xc
+	ori 	$t4,	$t4,	0x3c00
+	bne		$s2,	$t4,	Write_Screen 		# No need for Clr_S
+Write_Screen:
 	sw		$t3,	0($s2)
 	add 	$zero,	$zero, 	$zero	
 	sw		$t0,	0($s1) 						# Set counter chanel 00
