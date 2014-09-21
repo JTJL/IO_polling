@@ -244,7 +244,7 @@ Loop_Draw_Col:
 
 
 Draw_Block:
-	addi 	$sp, 	$sp,	-123
+	addi 	$sp, 	$sp,	-28
 	sw		$t4,	0x18($sp)	
 	sw		$t3,	0x14($sp)	
 	sw		$t2,	0x10($sp)
@@ -595,7 +595,7 @@ RETURN:
 	lw		$t2,	0x10($sp)	
 	lw		$t3,	0x14($sp)	
 	lw		$t4,	0x18($sp)
-	addi 	$sp,	$sp,	123
+	addi 	$sp,	$sp,	28
 	jr 		$ra
 
 .data
