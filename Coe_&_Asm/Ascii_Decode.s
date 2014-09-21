@@ -275,13 +275,13 @@ Case_Pattern_Begin:
 	beq 	$t0,	$t3,	P_ARROW				# Pattern   #				Pattern_No = 001_00
 												           ###
 	addi	$t3,	$zero,	0x8 											
-	beq 	$t0,	$t3,  P_SQUARE				# Pattern  ##				Pattern_No = 010_00
+	beq 	$t0,	$t3,  	P_SQUARE			# Pattern  ##				Pattern_No = 010_00
 												           ##
     addi	$t3,	$zero,	0xc
-    beq 	$t0,	$t3,  P_RIGHTL				# Pattern  #				Pattern_No = 011_00
+    beq 	$t0,	$t3,  	P_RIGHTL			# Pattern  #				Pattern_No = 011_00
     											           ###
     addi	$t3,	$zero,	0x10
-	beq 	$t0,	$t3,  P_LEFTL				# Pattern    #				Pattern_No = 100_00
+	beq 	$t0,	$t3,  	P_LEFTL				# Pattern    #				Pattern_No = 100_00
 												  		   ###
 P_LINE:
 	la		$t2,	Case_LINE_Rotation
