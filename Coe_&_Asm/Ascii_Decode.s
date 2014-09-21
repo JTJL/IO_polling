@@ -118,6 +118,8 @@ Print_Ascii:
 	addi 	$a0,	$a0,	1
 	addi 	$a1,	$a1,	0x302
 	jal 	Draw_Block
+	addi 	$a0,	$a0,	0x100
+	jal 	Draw_Block
 	#######################################################################
 
 	add 	$zero,	$zero, 	$zero	
