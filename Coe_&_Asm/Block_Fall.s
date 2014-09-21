@@ -94,25 +94,77 @@ Block_Fall_ARROW_Rotation:
 	beq		$zero,	$zero,  Block_Fall_ARROW_R
 
 Block_Fall_ARROW_D:
-	andi	$t1,	$a1,	0x7f
-   	addi	$t1,	$t1,	-12
-   	beq 	$t1,	$zero,	N_PLUS_1
-   	addi	$a1,	$a1,	1
-   	jr		$ra
+	lw		$t1,	0x40($s5)
+	lw		$t2,	0x84($s5)
+	or 		$t1,	$t1,	$t2
+	lw		$t2,	0x48($s5)
+	or 		$t1,	$t1,	$t2
+	bne 	$t1,	$zero,	N_FALL_ARROW_D
+	addi 	$a1,	$a1,	0x100				# Addr Y + 1
+   	jal		Draw_Block
+   	bne		$v0,	$zero,	N_FALL_ARROW_D		# Draw_Failed
+   	ori		$a0,	$a0,	0x100
+   	addi	$a1,	$a1,	-256
+	jal 	Draw_Block							# Clr the former one 
+	andi	$a0,	$a0,	0xff
+	addi	$a1,	$a1,	0x100
+   	j 		Block_Fall_RETURN
+
+N_FALL_ARROW_D:
+	ori		$v0,	$zero,	1
+	sw		$v0,	0x0($s5)
+	sw		$v0,	0x04($s5)
+	sw		$v0,	0x08($s5)
+	sw		$v0,	0x44($s5)
+	j 		Block_Fall_RETURN
 
 Block_Fall_ARROW_L:
-	andi	$t1,	$a1,	0x7f
-   	addi	$t1,	$t1,	-13
-   	beq 	$t1,	$zero,	N_PLUS_1
-   	addi	$a1,	$a1,	1
-   	jr		$ra
+	lw		$t1,	0x80($s5)
+	lw		$t2,	0xc4($s5)
+	or 		$t1,	$t1,	$t2
+	bne 	$t1,	$zero,	N_FALL_ARROW_L
+	addi 	$a1,	$a1,	0x100				# Addr Y + 1
+   	jal		Draw_Block
+   	bne		$v0,	$zero,	N_FALL_ARROW_L		# Draw_Failed
+   	ori		$a0,	$a0,	0x100
+   	addi	$a1,	$a1,	-256
+	jal 	Draw_Block							# Clr the former one 
+	andi	$a0,	$a0,	0xff
+	addi	$a1,	$a1,	0x100
+   	j 		Block_Fall_RETURN
+
+N_FALL_ARROW_L:
+	ori		$v0,	$zero,	1
+	sw		$v0,	0x04($s5)
+	sw		$v0,	0x40($s5)
+	sw		$v0,	0x44($s5)
+	sw		$v0,	0x84($s5)
+	j 		Block_Fall_RETURN
 
 Block_Fall_ARROW_U:
-	andi	$t1,	$a1,	0x7f
-   	addi	$t1,	$t1,	-12
-   	beq 	$t1,	$zero,	N_PLUS_1
-   	addi	$a1,	$a1,	1
-   	jr		$ra
+	lw		$t1,	0x80($s5)
+	lw		$t2,	0x84($s5)
+	or 		$t1,	$t1,	$t2
+	lw		$t2,	0x88($s5)
+	or 		$t1,	$t1,	$t2
+	bne 	$t1,	$zero,	N_FALL_ARROW_U
+	addi 	$a1,	$a1,	0x100				# Addr Y + 1
+   	jal		Draw_Block
+   	bne		$v0,	$zero,	N_FALL_ARROW_U		# Draw_Failed
+   	ori		$a0,	$a0,	0x100
+   	addi	$a1,	$a1,	-256
+	jal 	Draw_Block							# Clr the former one 
+	andi	$a0,	$a0,	0xff
+	addi	$a1,	$a1,	0x100
+   	j 		Block_Fall_RETURN
+
+N_FALL_ARROW_U:
+	ori		$v0,	$zero,	1
+	sw		$v0,	0x04($s5)
+	sw		$v0,	0x40($s5)
+	sw		$v0,	0x44($s5)
+	sw		$v0,	0x48($s5)
+	j 		Block_Fall_RETURN
 
 Block_Fall_ARROW_R:
 	andi	$t1,	$a1,	0x7f
