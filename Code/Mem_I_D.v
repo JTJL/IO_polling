@@ -36,7 +36,7 @@ module Mem_I_D(
 
 
 	initial begin
-		$readmemb("../Coe_&_Asm/Counter_Test.coe",RAM);
+		$readmemb("../Coe_&_Asm/A_Draw_Block_in_Win.coe",RAM);
 	end
 
 	always @(posedge clk ) begin

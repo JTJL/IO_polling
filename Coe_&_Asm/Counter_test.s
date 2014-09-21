@@ -61,6 +61,4 @@ Write_Screen:
 	sw 		$t7,	4($s1)						# Turn counter on
 	add 	$zero,	$zero,	$zero
 	add 	$zero,	$zero,	$zero
-	#addi 	$t0,	$zero, 	1
-	#beq 	$v0,	$t0, 	TERIS_GAME			# Enter the game
 	j 		Polling
