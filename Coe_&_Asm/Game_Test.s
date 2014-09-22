@@ -1,5 +1,15 @@
+#############################################################
+##	Function Name: 	TERIS_GAME
+##
+## 	Description	: 	The entrance of the game 
+##
+##	Status 	: 		Under Test
+##
+##############################################################
+
 TERIS_GAME:
-	addi 	$sp,	$sp,	-28
+	addi 	$sp,	$sp,	-32
+	sw 		$s3,	0x1c($s0)
 	sw		$t4,	0x18($sp)	
 	sw		$t3,	0x14($sp)	
 	sw		$t2,	0x10($sp)
@@ -9,12 +19,21 @@ TERIS_GAME:
 	sw 		$ra,	0x0($sp)
 
 	lui		$s1,	0x3ff							# Counter Init
+	lui		$s3,	0xc
+	addi	$s3,	$zero,	0xe1f
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
-
+	add		$a0,	$zero, 	$zero
+	sw 		$a0,	0($t0)
 	la 		$t0,	Block_Addr 						# Relative address
 	lw 		$a1,	0($t0)
+	addi	$a1,	$zero,	0x08
+	sw 		$a1,	0($t0)
+	and 	$zero,	$zero,	$zero
+	add 	$a1,	$a1,	$s3
+	jal		Draw_Block
+	sub 	$a1,	$a1,	$s3
 
 GAME_ON:
 	addi 	$s1,	$s1,	-1 						# Counter - 1
@@ -25,6 +44,13 @@ GAME_ON:
 N_key:
 	bne 	$zero,	$s1,	N_Fall
 	jal 	Block_Fall
+	beq		$v0,	$zero,	N_NEXT_BLOCK
+	addi 	$a0,	$a0,	5						# Actually 5 is not that reasonable
+	ori	 	$a1,	$zero,	0x08
+	add 	$a1,	$a1,	$s3
+	jal		Draw_Block
+	sub 	$a1,	$a1,	$s3
+N_NEXT_BLOCK:
 	la		$t0,	Block_Pattern
 	sw		$a0,	0($t0)
 
@@ -45,7 +71,8 @@ GAME_OVER:
 	lw		$t2,	0x10($sp)	
 	lw		$t3,	0x14($sp)	
 	lw		$t4,	0x18($sp)
-	addi 	$sp,	$sp,	28
+	lw 		$s3,	0x1c($s0)
+	addi 	$sp,	$sp,	32
 	jr 		$ra
 
 Key_Respond:
