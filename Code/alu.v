@@ -18,6 +18,7 @@ module alu( input  [31: 0] A,
     assign res_xor = A ^ B;
     assign res_nor = ~(A | B);
     assign res_slt = ( A < B )? one: zero_0;				// Unsigned 
+    //  assign res_slt = ( $signed(A) < $signed(B) )? one: zero_0;                // Signed
 
     always @( A or B or ALU_operation ) begin
         case ( ALU_operation )
