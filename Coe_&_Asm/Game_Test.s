@@ -110,12 +110,16 @@ Block_Fall:
 Loop_line:
 	addi	$t0,	$t0, 	-256				# Minus 0x100
 	addi	$s5,	$s5,	0x40				# Next line
+	addi 	$t3,	$zero,	-512
+	sw 		$t0,	0($t3)						# Write Seven_seg
 	bne		$t0,	$zero,	Loop_line
 FIRST_LINE:
 	beq		$t4,	$zero,	FIRST_POINT
 Loop_point:
 	addi	$t4,	$t4,	-1
 	addi	$s5,	$s5,	0x4
+	addi 	$t3,	$zero,	-512
+	sw 		$t4,	0($t3)						# Write Seven_seg
 	bne		$t4,	$zero,	Loop_line	
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
