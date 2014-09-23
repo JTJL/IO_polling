@@ -102,8 +102,10 @@ Block_Fall:
 	sw		$s2,	0x08($sp)
 	sw		$s5,	0x04($sp)
 	sw		$ra,	0x00($sp)
-
+	
+	add 	$zero,	$zero,	$zero
 	andi	$t0,	$a1,	0x3f00				# Get current Y addr (relatively)
+	add 	$zero,	$zero,	$zero
 	andi	$t4,	$a1,	0x7f				# Get current X addr (relatively)
 	la		$s5,	Win_Line_U 					# Point reg
 	add 	$zero,	$zero,	$zero
@@ -113,6 +115,7 @@ Loop_line:
 	addi	$s5,	$s5,	0x40				# Next line
 	addi 	$t3,	$zero,	-512
 	sw 		$t0,	0($t3)						# Write Seven_seg
+	add 	$zero,	$zero,	$zero
 	bne		$t0,	$zero,	Loop_line
 FIRST_LINE:
 	beq		$t4,	$zero,	FIRST_POINT
@@ -121,6 +124,7 @@ Loop_point:
 	addi	$s5,	$s5,	0x4
 	addi 	$t3,	$zero,	-512
 	sw 		$t4,	0($t3)						# Write Seven_seg
+	add 	$zero,	$zero,	$zero
 	bne		$t4,	$zero,	Loop_line	
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
