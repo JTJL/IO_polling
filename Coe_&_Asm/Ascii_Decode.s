@@ -245,7 +245,7 @@ Loop_Draw_Col:
 
 
 Draw_Block:
-	addi 	$sp, 	$sp,	-28
+	addi 	$sp, 	$sp,	-123
 	sw		$t4,	0x18($sp)	
 	sw		$t3,	0x14($sp)	
 	sw		$t2,	0x10($sp)
@@ -276,13 +276,13 @@ Case_Pattern_Begin:
 	beq 	$t0,	$t3,	P_ARROW				# Pattern   #				Pattern_No = 001_00
 												           ###
 	addi	$t3,	$zero,	0x8 											
-	beq 	$t0,	$t3,  	P_SQUARE			# Pattern  ##				Pattern_No = 010_00
+	beq 	$t0,	$t3,  P_SQUARE				# Pattern  ##				Pattern_No = 010_00
 												           ##
     addi	$t3,	$zero,	0xc
-    beq 	$t0,	$t3,  	P_RIGHTL			# Pattern  #				Pattern_No = 011_00
+    beq 	$t0,	$t3,  P_RIGHTL				# Pattern  #				Pattern_No = 011_00
     											           ###
     addi	$t3,	$zero,	0x10
-	beq 	$t0,	$t3,  	P_LEFTL				# Pattern    #				Pattern_No = 100_00
+	beq 	$t0,	$t3,  P_LEFTL				# Pattern    #				Pattern_No = 100_00
 												  		   ###
 P_LINE:
 	la		$t2,	Case_LINE_Rotation
@@ -297,6 +297,9 @@ LINE_HORIZONTAL:
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	addi 	$t2,	$t2,	3					# Judge x + 3
 	slti	$t3,	$t2,	0x2d				
+	andi	$t2,	$a1,	0x3f00				# Get addr Y
+	slti	$t4,	$t2,	0x2d00				# Judge if Y < 32(Indirectly)
+	and 	$t3,	$t3,	$t4
 	beq		$t3,	$zero, 	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero
 	sw 		$s0,	0($a1)
@@ -309,6 +312,9 @@ LINE_VERTICAL:
 	andi 	$t2,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	0x300 				# Judge y + 3
 	slti	$t3,	$t2,	0x2d00
+	andi	$t2,	$a1,	0x7f
+	slti	$t4,	$t2,	0x2d
+	and 	$t3,	$t3,	$t4
 	beq		$t3,	$zero, 	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero
 	sw		$s0,	0($a1)
@@ -596,7 +602,7 @@ DRAW_BLOCK_RETURN:
 	lw		$t2,	0x10($sp)	
 	lw		$t3,	0x14($sp)	
 	lw		$t4,	0x18($sp)
-	addi 	$sp,	$sp,	28
+	addi 	$sp,	$sp,	123
 	jr 		$ra
 
 #############################################################
@@ -619,9 +625,9 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x3ff							# Counter Init
+	lui		$s1,	0x1f							# Counter Init
 	lui		$s3,	0xc
-	addi	$s3,	$zero,	0xe1f
+	addi	$s3,	$s3,	0xe1f
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
@@ -657,7 +663,7 @@ N_NEXT_BLOCK:
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x3ff
+	lui		$s1,	0x1f
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -721,7 +727,7 @@ Loop_point:
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
 	lui		$s2,	0xc
-	addi	$s2,	$zero,	0xe1f
+	addi	$s2,	$s2,	0xe1f
 	andi	$t0,	$a0,	0x1c				# Get current pattern
 	
 

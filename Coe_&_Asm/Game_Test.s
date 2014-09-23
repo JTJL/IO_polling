@@ -18,9 +18,9 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x3ff							# Counter Init
+	lui		$s1,	0x1f							# Counter Init
 	lui		$s3,	0xc
-	addi	$s3,	$zero,	0xe1f
+	addi	$s3,	$s3,	0xe1f
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
@@ -56,7 +56,7 @@ N_NEXT_BLOCK:
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x3ff
+	lui		$s1,	0x1f
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -120,7 +120,7 @@ Loop_point:
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
 	lui		$s2,	0xc
-	addi	$s2,	$zero,	0xe1f
+	addi	$s2,	$s2,	0xe1f
 	andi	$t0,	$a0,	0x1c				# Get current pattern
 	
 

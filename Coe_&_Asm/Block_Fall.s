@@ -38,7 +38,7 @@ Loop_point:
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
 	lui		$s2,	0xc
-	addi	$s2,	$zero,	0xe1f
+	addi	$s2,	$s2,	0xe1f
 	andi	$t0,	$a0,	0x1c				# Get current pattern
 	
 
