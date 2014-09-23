@@ -106,6 +106,7 @@ Block_Fall:
 	andi	$t0,	$a1,	0x3f00				# Get current Y addr (relatively)
 	andi	$t4,	$a1,	0x7f				# Get current X addr (relatively)
 	la		$s5,	Win_Line_U 					# Point reg
+	add 	$zero,	$zero,	$zero
 	beq		$t0,	$zero,	FIRST_LINE
 Loop_line:
 	addi	$t0,	$t0, 	-256				# Minus 0x100
