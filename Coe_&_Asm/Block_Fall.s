@@ -58,16 +58,16 @@ FIRST_POINT:									# Here we reach the left-top point of the block, stored in 
 												  		   ###
 Block_Fall_LINE:	
    	andi	$t1,	$a0,	0x1 				# Get current rotation
-   	beq 	$t1,	$zero,	Block_Fall_Horizontal
-   	lw 		$t1,	0xc0($s5) 	
+   	beq 	$t1,	$zero,	Block_Fall_Line_Horizontal
+   	lw 		$t1,	0x100($s5) 	
    	bne 	$t1,	$zero,	N_FALL_Line_V	
    	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							 
 	sub 	$a1,	$a1,	$s2
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_Line_V		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
 	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -85,7 +85,7 @@ N_FALL_Line_V:
 	add 	$zero,	$zero,	$zero	
 	j 		Block_Fall_RETURN
 
-Block_Fall_Horizontal:
+Block_Fall_Line_Horizontal:
 	lw		$t1,	0x40($s5)
 	lw		$t2,	0x44($s5)
 	or 		$t1,	$t1,	$t2
@@ -97,10 +97,10 @@ Block_Fall_Horizontal:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block			
-	sub  	$a1,	$a1,	$s2				
+	sub  	$a1,	$a1,	$s2
+	addi	$a1,	$a1,	-256				
    	bne		$v0,	$zero,	N_FALL_Line_H		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -120,6 +120,8 @@ N_FALL_Line_H:
 
 Block_Fall_ARROW:
 	andi	$t1,	$a0,	0x3					# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1	
 	la		$t2,	Block_Fall_ARROW_Rotation
 	add 	$t2,	$t2,	$t1					# Add $t1 as offset
 	jr 		$t2
@@ -140,9 +142,9 @@ Block_Fall_ARROW_D:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							
 	sub  	$a1,	$a1,	$s2	
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_ARROW_D		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -164,14 +166,18 @@ Block_Fall_ARROW_L:
 	lw		$t1,	0x80($s5)
 	lw		$t2,	0xc4($s5)
 	or 		$t1,	$t1,	$t2
+	add 	$zero,	$zero,	$zero
+	addi	$t2,	$zero,  -512
+	sw 		$t1,	0($t2)
+	add 	$zero,	$zero,	$zero
 	bne 	$t1,	$zero,	N_FALL_ARROW_L
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block		
-	sub  	$a1,	$a1,	$s2						 
+	sub  	$a1,	$a1,	$s2	
+   	addi	$a1,	$a1,	-256					 
    	bne		$v0,	$zero,	N_FALL_ARROW_L		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -200,9 +206,9 @@ Block_Fall_ARROW_U:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							
 	sub  	$a1,	$a1,	$s2	
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_ARROW_U		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -228,10 +234,10 @@ Block_Fall_ARROW_R:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block			
-	sub  	$a1,	$a1,	$s2					
+	sub  	$a1,	$a1,	$s2	
+   	addi	$a1,	$a1,	-256				
    	bne		$v0,	$zero,	N_FALL_ARROW_R		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -260,9 +266,9 @@ Block_Fall_SQUARE:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block			
 	sub  	$a1,	$a1,	$s2					
+   	addi	$a1,	$a1,	-256   	
    	bne		$v0,	$zero,	N_FALL_SQUARE		# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -282,6 +288,8 @@ N_FALL_SQUARE:
 
 Block_Fall_RIGHTL:
 	andi	$t1,	$a0,	0x3 				# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1	
 	la		$t2,	Block_Fall_RIGHTL_Rotation
 	add 	$t2,	$t2,	$t1					# Add $t1 as offset
 	jr 		$t2
@@ -303,9 +311,9 @@ Block_Fall_RL_R:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# See if inside the window 
 	sub  	$a1,	$a1,	$s2	
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_RL_R			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 					 
 	andi	$a0,	$a0,	0xff
@@ -332,9 +340,9 @@ Block_Fall_RL_D:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# See if inside the window 
 	sub  	$a1,	$a1,	$s2	
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_RL_D			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -363,9 +371,9 @@ Block_Fall_RL_L:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# See if inside the window 
 	sub  	$a1,	$a1,	$s2	
+   	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_RL_L			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -393,9 +401,9 @@ Block_Fall_RL_U:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# See if inside the window 
 	sub  	$a1,	$a1,	$s2	 
+   	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_RL_U			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -415,6 +423,8 @@ N_FALL_RL_U:
 
 Block_Fall_LEFTL:
 	andi	$t1,	$a0,	0x3 				# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1	
 	la		$t2,	Block_Fall_LEFTL_Rotation
 	add 	$t2,	$t2,	$t1					# Add $t1 as offset
 	jr 		$t2
@@ -436,9 +446,9 @@ Block_Fall_LL_L:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	sub  	$a1,	$a1,	$s2	
+   	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_LL_L			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -465,9 +475,9 @@ Block_Fall_LL_U:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	sub  	$a1,	$a1,	$s2	
+	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_LL_U			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -496,9 +506,9 @@ Block_Fall_LL_R:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	sub 	$a1,	$a1,	$s2	
+   	addi	$a1,	$a1,	-256
    	bne		$v0,	$zero,	N_FALL_LL_R			# Draw_Failed
    	ori		$a0,	$a0,	0x100
-   	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
@@ -525,9 +535,9 @@ Block_Fall_LL_D:
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	sub  	$a1,	$a1,	$s2	
-   	bne		$v0,	$zero,	N_FALL_LL_D			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
+   	bne		$v0,	$zero,	N_FALL_LL_D			# Draw_Failed
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
 	andi	$a0,	$a0,	0xff
