@@ -24,8 +24,8 @@ TERIS_GAME:
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
-	add		$a0,	$zero, 	$zero
-	sw 		$a0,	0($t0)
+	addi	$a0,	$zero, 	0x4 					# Starting from 	#
+	sw 		$a0,	0($t0)											   ###
 	la 		$t0,	Block_Addr 						# Relative address
 	lw 		$a1,	0($t0)
 	addi	$a1,	$zero,	0x08

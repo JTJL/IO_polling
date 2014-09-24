@@ -341,8 +341,8 @@ ARROW_DOWN:										# ARROW: 	###
 	addi 	$t2,	$t2,	3					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -360,8 +360,8 @@ ARROW_RIGHT:									# ARROW: 	#
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -378,8 +378,8 @@ ARROW_UP:										# ARROW: 	 #
 	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x1($a1)
@@ -396,8 +396,8 @@ ARROW_LEFT:										# ARROW: 	 #
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x1($a1)
@@ -413,8 +413,8 @@ P_SQUARE:										# Square    ##
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -442,8 +442,8 @@ RIGHTL_R:										# Right_L R	#
 	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -461,8 +461,8 @@ RIGHTL_D:										# Right_L D	##
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -479,8 +479,8 @@ RIGHTL_L:										# Right_L L	###
 	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -498,8 +498,8 @@ RIGHTL_U:										# Right_L L	 #
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x1($a1)
@@ -527,8 +527,8 @@ LEFTL_L:										# Left_L L	  #
 	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x2($a1)
@@ -546,8 +546,8 @@ LEFTL_U:										# Left_L U	#
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -564,8 +564,8 @@ LEFTL_R:										# Left_L U	###
 	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -583,8 +583,8 @@ LEFTL_D:										# Left_L U	##
 	addi 	$t2,	$t2,	1					# Judge x + 1
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2e00
-	and		$t4,	$t4,	$t5
+	slti	$t3,	$t3,	0x2e00
+	and		$t4,	$t4,	$t3
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
 	sw 		$s0,	0x0($a1)
@@ -631,8 +631,8 @@ TERIS_GAME:
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
-	add		$a0,	$zero, 	$zero
-	sw 		$a0,	0($t0)
+	addi	$a0,	$zero, 	0x4 					# Starting from 	#
+	sw 		$a0,	0($t0)											   ###
 	la 		$t0,	Block_Addr 						# Relative address
 	lw 		$a1,	0($t0)
 	addi	$a1,	$zero,	0x08
