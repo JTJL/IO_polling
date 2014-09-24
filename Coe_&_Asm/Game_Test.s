@@ -18,7 +18,7 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x1f							# Counter Init
+	lui		$s1,	0x7							# Counter Init
 	lui		$s3,	0xc
 	addi	$s3,	$s3,	0xe1f
 
@@ -56,7 +56,7 @@ N_NEXT_BLOCK:
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x1f
+	lui		$s1,	0x7
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -102,30 +102,21 @@ Block_Fall:
 	sw		$s2,	0x08($sp)
 	sw		$s5,	0x04($sp)
 	sw		$ra,	0x00($sp)
-	
-	add 	$zero,	$zero,	$zero
+
 	andi	$t0,	$a1,	0x3f00				# Get current Y addr (relatively)
-	add 	$zero,	$zero,	$zero
 	andi	$t4,	$a1,	0x7f				# Get current X addr (relatively)
 	la		$s5,	Win_Line_U 					# Point reg
-	add 	$zero,	$zero,	$zero
 	beq		$t0,	$zero,	FIRST_LINE
 Loop_line:
 	addi	$t0,	$t0, 	-256				# Minus 0x100
 	addi	$s5,	$s5,	0x40				# Next line
-	addi 	$t3,	$zero,	-512
-	sw 		$t0,	0($t3)						# Write Seven_seg
-	add 	$zero,	$zero,	$zero
 	bne		$t0,	$zero,	Loop_line
 FIRST_LINE:
 	beq		$t4,	$zero,	FIRST_POINT
 Loop_point:
 	addi	$t4,	$t4,	-1
 	addi	$s5,	$s5,	0x4
-	addi 	$t3,	$zero,	-512
-	sw 		$t4,	0($t3)						# Write Seven_seg
-	add 	$zero,	$zero,	$zero
-	bne		$t4,	$zero,	Loop_line	
+	bne		$t4,	$zero,	Loop_point	
 FIRST_POINT:									# Here we reach the left-top point of the block, stored in $s5
 	
 	lui		$s2,	0xc
@@ -161,8 +152,10 @@ Block_Fall_LINE:
    	addi	$a1,	$a1,	-256
 	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_Line_V:
@@ -185,16 +178,17 @@ Block_Fall_Horizontal:
 	bne 	$t1,	$zero,	N_FALL_Line_H
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block			
+	sub  	$a1,	$a1,	$s2				
    	bne		$v0,	$zero,	N_FALL_Line_H		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_Line_H:
@@ -227,15 +221,16 @@ Block_Fall_ARROW_D:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							
-	sub 	$a1,	$a1,	$s2
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_ARROW_D		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block							# Clr the former one 
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_ARROW_D:
@@ -254,16 +249,17 @@ Block_Fall_ARROW_L:
 	bne 	$t1,	$zero,	N_FALL_ARROW_L
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							 
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block		
+	sub  	$a1,	$a1,	$s2						 
    	bne		$v0,	$zero,	N_FALL_ARROW_L		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_ARROW_L:
@@ -285,15 +281,16 @@ Block_Fall_ARROW_U:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							
-	sub 	$a1,	$a1,	$s2
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_ARROW_U		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_ARROW_U:
@@ -312,16 +309,17 @@ Block_Fall_ARROW_R:
 	bne 	$t1,	$zero,	N_FALL_ARROW_R
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block			
+	sub  	$a1,	$a1,	$s2					
    	bne		$v0,	$zero,	N_FALL_ARROW_R		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_ARROW_R:
@@ -342,16 +340,17 @@ Block_Fall_SQUARE:
 	bne 	$t1,	$zero,	N_FALL_SQUARE
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block			
+	sub  	$a1,	$a1,	$s2					
    	bne		$v0,	$zero,	N_FALL_SQUARE		# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_SQUARE:
@@ -384,16 +383,17 @@ Block_Fall_RL_R:
 	bne 	$t1,	$zero,	N_FALL_RL_R
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block							# See if inside the window 
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_RL_R			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							 
+   	add 	$a1,	$a1,	$s2
+	jal 	Draw_Block							# Clr the former one 					 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_RL_R:
@@ -412,16 +412,17 @@ Block_Fall_RL_D:
 	bne 	$t1,	$zero,	N_FALL_RL_D
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block							# See if inside the window 
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_RL_D			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_RL_D:
@@ -442,16 +443,17 @@ Block_Fall_RL_L:
 	bne 	$t1,	$zero,	N_FALL_RL_L
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block							# See if inside the window 
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_RL_L			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_RL_L:
@@ -471,16 +473,17 @@ Block_Fall_RL_U:
 	bne 	$t1,	$zero,	N_FALL_RL_U
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
-	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	jal 	Draw_Block							# See if inside the window 
+	sub  	$a1,	$a1,	$s2	 
    	bne		$v0,	$zero,	N_FALL_RL_U			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2						# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_RL_U:
@@ -514,15 +517,16 @@ Block_Fall_LL_L:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_LL_L			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_LL_L:
@@ -542,15 +546,16 @@ Block_Fall_LL_U:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_LL_U			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_LL_U:
@@ -572,15 +577,16 @@ Block_Fall_LL_R:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	sub 	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_LL_R			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
-	add 	$a1,	$a1,	$s2
+   	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2							# Clr the former one 
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_LL_R:
@@ -600,15 +606,16 @@ Block_Fall_LL_D:
 	addi 	$a1,	$a1,	0x100				# Addr Y + 1
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
+	sub  	$a1,	$a1,	$s2	
    	bne		$v0,	$zero,	N_FALL_LL_D			# Draw_Failed
    	ori		$a0,	$a0,	0x100
    	addi	$a1,	$a1,	-256
    	add 	$a1,	$a1,	$s2
 	jal 	Draw_Block							# Clr the former one 
-	sub 	$a1,	$a1,	$s2
 	andi	$a0,	$a0,	0xff
 	addi	$a1,	$a1,	0x100
+	jal 	Draw_Block
+	sub 	$a1,	$a1,	$s2
    	j 		Block_Fall_RETURN
 
 N_FALL_LL_D:

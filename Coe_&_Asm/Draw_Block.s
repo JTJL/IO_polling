@@ -63,9 +63,9 @@ Case_LINE_Rotation:
 LINE_HORIZONTAL:
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	addi 	$t2,	$t2,	3					# Judge x + 3
-	slti	$t3,	$t2,	0x2d				
+	slti	$t3,	$t2,	0x2e				
 	andi	$t2,	$a1,	0x3f00				# Get addr Y
-	slti	$t4,	$t2,	0x2d00				# Judge if Y < 32(Indirectly)
+	slti	$t4,	$t2,	0x2e00				# Judge if Y < 32(Indirectly)
 	and 	$t3,	$t3,	$t4
 	beq		$t3,	$zero, 	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero
@@ -78,9 +78,9 @@ LINE_HORIZONTAL:
 LINE_VERTICAL:
 	andi 	$t2,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	0x300 				# Judge y + 3
-	slti	$t3,	$t2,	0x2d00
+	slti	$t3,	$t2,	0x2e00
 	andi	$t2,	$a1,	0x7f
-	slti	$t4,	$t2,	0x2d
+	slti	$t4,	$t2,	0x2e
 	and 	$t3,	$t3,	$t4
 	beq		$t3,	$zero, 	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero
@@ -106,9 +106,9 @@ ARROW_DOWN:										# ARROW: 	###
     andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y															 
 	addi 	$t2,	$t2,	3					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -125,9 +125,9 @@ ARROW_RIGHT:									# ARROW: 	#
     andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y															
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -143,9 +143,9 @@ ARROW_UP:										# ARROW: 	 #
     andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y															
 	addi 	$t2,	$t2,	2					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -161,9 +161,9 @@ ARROW_LEFT:										# ARROW: 	 #
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -178,9 +178,9 @@ P_SQUARE:										# Square    ##
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -207,9 +207,9 @@ RIGHTL_R:										# Right_L R	#
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	2					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -226,9 +226,9 @@ RIGHTL_D:										# Right_L D	##
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -244,9 +244,9 @@ RIGHTL_L:										# Right_L L	###
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	2					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -263,9 +263,9 @@ RIGHTL_U:										# Right_L L	 #
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -292,9 +292,9 @@ LEFTL_L:										# Left_L L	  #
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	2					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -311,9 +311,9 @@ LEFTL_U:										# Left_L U	#
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -329,9 +329,9 @@ LEFTL_R:										# Left_L U	###
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	2					# Judge x + 2
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
@@ -348,9 +348,9 @@ LEFTL_D:										# Left_L U	##
 	andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y
 	addi 	$t2,	$t2,	1					# Judge x + 1
-	slti	$t4,	$t2,	0x2d			
+	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x200				# Judge y + 2
-	slti	$t5,	$t2,	0x2d00
+	slti	$t5,	$t2,	0x2e00
 	and		$t4,	$t4,	$t5
 	beq 	$t4,	$zero,	DRAW_BLOCK_RETURN
 	and 	$v0,	$zero,	$zero 				# Draw Succeeded
