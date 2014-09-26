@@ -754,7 +754,7 @@ KEY_RESPOND_N_MINUS_Four:
 	add  	$zero, 	$zero,	$zero
 	add 	$a1,	$a1,	$s2 						# Add 000c_0000 plus window offset
 	jal	 	Draw_Block 		
-	sub		$a1,	$a1,	$s2							# Clr the old one 
+	sub		$a1,	$a1,	$s2						
 	j 		KEY_RESPOND_RETURN
 
 KEY_RESPOND_N_SPACE:
@@ -821,6 +821,8 @@ KEY_RESPOND_Horizontal:
 
 KEY_RESPOND_ARROW:
 	andi	$t1,	$a0,	0x3							# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1
 	la		$t2,	KEY_RESPOND_ARROW_Rotation
 	add 	$t2,	$t2,	$t1							# Add $t1 as offset
 	jr 		$t2
@@ -847,7 +849,7 @@ KEY_RESPOND_ARROW_L:
 	andi	$t1,	$a1,	0x7f
    	addi	$t1,	$t1,	-13
    	beq 	$t1,	$zero,	KEY_RESPOND_RETURN
-   	ori	 	$a0,	$a0,	0x100
+   	ori	 	$a0,	$a0,	0x100						# Clr
    	add 	$a1,	$a1,	$s2
 	jal	 	Draw_Block
 	andi	$a0,	$a0,	0xff
@@ -897,6 +899,9 @@ KEY_RESPOND_SQUARE:
 
 KEY_RESPOND_RIGHTL:
 	la		$t2,	KEY_RESPOND_RIGHTL_Rotation
+	andi	$t1,	$a0,	0x3							# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1
 	add 	$t2,	$t2,	$t1							# Add $t1 as offset
 	jr 		$t2
 
@@ -960,6 +965,9 @@ KEY_RESPOND_RL_U:
 
 KEY_RESPOND_LEFTL:
 	la		$t2,	KEY_RESPOND_LEFTL_Rotation
+	andi	$t1,	$a0,	0x3							# Get current rotation
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1
 	add 	$t2,	$t2,	$t1							# Add $t1 as offset
 	jr 		$t2
 
