@@ -53,7 +53,11 @@ Case_Pattern_Begin:
 												  		   ###
 P_LINE:
 	la		$t2,	Case_LINE_Rotation
+	andi 	$t1,	$a0, 	0x1
+	add 	$t1,	$t1,	$t1
+	add 	$t1,	$t1,	$t1
 	add 	$t2,	$t2,	$t1					# Add $t1 as offset
+
 	jr 		$t2
 
 Case_LINE_Rotation:	

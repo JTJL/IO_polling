@@ -45,18 +45,22 @@ KEY_RESPOND_Load_Data:
 	# Detect if key in need 
 	addi 	$t1, 	$t2,	-282 						# SPACE Judge
 	bne 	$t1, 	$zero, 	KEY_RESPOND_N_SPACE	
-	ori		$t1,	$zero,	0x3							# Get current rotation
-	and		$t2,	$a0,	$t1
+	ori		$t1,	$zero,	0x3							
+	and		$t2,	$a0,	$t1							# Get current rotation
 	ori	 	$a0,	$a0,	0x100
-	add 	$a1,	$a1,	$s2
-	jal	 	Draw_Block
+	add 	$a1,	$a1,	$s2 						# Add 000c_0000 plus window offset
+	jal	 	Draw_Block 		
+	sub		$a1,	$a1,	$s2							# Clr the old one 
 	andi	$a0,	$a0,	0xff
-	bne 	$t2,	$t1,	KEY_RESPOND_N_MINUS_0x4
+	bne 	$t2,	$t1,	KEY_RESPOND_N_MINUS_Four
 	addi	$a0,	$a0,	-4
-KEY_RESPOND_N_MINUS_0x4:
+KEY_RESPOND_N_MINUS_Four:
+	add 	$zero,	$zero, 	$zero
 	addi	$a0,	$a0,	1
-	jal	 	Draw_Block
-	sub		$a1,	$a1,	$s2
+	add  	$zero, 	$zero,	$zero
+	add 	$a1,	$a1,	$s2 						# Add 000c_0000 plus window offset
+	jal	 	Draw_Block 		
+	sub		$a1,	$a1,	$s2						
 	j 		KEY_RESPOND_RETURN
 
 KEY_RESPOND_N_SPACE:

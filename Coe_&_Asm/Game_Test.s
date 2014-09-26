@@ -17,13 +17,13 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x7							# Counter Init
+	lui		$s1,	0x2							# Counter Init
 	lui		$s3,	0xc
 	addi	$s3,	$s3,	0xe1f
 
 	la		$t0,	Block_Pattern
 	lw		$a0,	0($t0)
-	addi	$a0,	$zero, 	0xc 					# Starting from 	#
+	addi	$a0,	$zero, 	0x0 					# Starting from 	#
 	sw 		$a0,	0($t0)											    ###
 	la 		$t0,	Block_Addr 						# Relative address
 	lw 		$a1,	0($t0)
@@ -44,7 +44,13 @@ N_key:
 	bne 	$zero,	$s1,	N_Fall
 	jal 	Block_Fall
 	beq		$v0,	$zero,	N_NEXT_BLOCK
-	addi 	$a0,	$a0,	1						# Actually 5 is not that reasonable
+	ori		$t1,	$zero,	0x1f							
+	and		$t2,	$a0,	$t1							# Get current pattern and rotation
+	ori		$t1,	$zero,	0x13
+	bne 	$t2,	$t1,	INGAME_NONE_ZERO_STATUS
+	and 	$a0,	$zero,	$zero	
+INGAME_NONE_ZERO_STATUS:
+	addi 	$a0,	$a0,	1						
 	ori	 	$a1,	$zero,	0x08
 	add 	$a1,	$a1,	$s3
 	jal		Draw_Block
@@ -55,7 +61,7 @@ N_NEXT_BLOCK:
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x7
+	lui		$s1,	0x2
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -122,18 +128,22 @@ KEY_RESPOND_Load_Data:
 	# Detect if key in need 
 	addi 	$t1, 	$t2,	-282 						# SPACE Judge
 	bne 	$t1, 	$zero, 	KEY_RESPOND_N_SPACE	
-	ori		$t1,	$zero,	0x3							# Get current rotation
-	and		$t2,	$a0,	$t1
+	ori		$t1,	$zero,	0x3							
+	and		$t2,	$a0,	$t1							# Get current rotation
 	ori	 	$a0,	$a0,	0x100
-	add 	$a1,	$a1,	$s2
-	jal	 	Draw_Block
+	add 	$a1,	$a1,	$s2 						# Add 000c_0000 plus window offset
+	jal	 	Draw_Block 		
+	sub		$a1,	$a1,	$s2							# Clr the old one 
 	andi	$a0,	$a0,	0xff
-	bne 	$t2,	$t1,	KEY_RESPOND_N_MINUS_0x4
+	bne 	$t2,	$t1,	KEY_RESPOND_N_MINUS_Four
 	addi	$a0,	$a0,	-4
-KEY_RESPOND_N_MINUS_0x4:
+KEY_RESPOND_N_MINUS_Four:
+	add 	$zero,	$zero, 	$zero
 	addi	$a0,	$a0,	1
-	jal	 	Draw_Block
-	sub		$a1,	$a1,	$s2
+	add  	$zero, 	$zero,	$zero
+	add 	$a1,	$a1,	$s2 						# Add 000c_0000 plus window offset
+	jal	 	Draw_Block 		
+	sub		$a1,	$a1,	$s2							# Clr the old one 
 	j 		KEY_RESPOND_RETURN
 
 KEY_RESPOND_N_SPACE:
