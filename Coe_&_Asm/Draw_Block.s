@@ -9,8 +9,6 @@
 ##  Return 	:	$v0 Zero for Draw-Succeed otherwise Draw-Failure
 ##
 #########################################
-
-
 Draw_Block:
 	addi 	$sp, 	$sp,	-28
 	sw		$t4,	0x18($sp)	
