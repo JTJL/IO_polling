@@ -342,7 +342,7 @@ ARROW_DOWN:										# ARROW: 	###
 
     andi	$t2,	$a1, 	0x7f 				# Get addr X
 	andi 	$t3,	$a1, 	0x3f00				# Get addr Y															 
-	addi 	$t2,	$t2,	3					# Judge x + 2
+	addi 	$t2,	$t2,	2					# Judge x + 2
 	slti	$t4,	$t2,	0x2e			
 	addi 	$t3,	$t3,	0x100				# Judge y + 1
 	slti	$t3,	$t3,	0x2e00

@@ -36,7 +36,7 @@ module Mem_I_D(
 
 
 	initial begin
-		$readmemb("../Coe_&_Asm/Block_Fall_with_keyctrl.coe",RAM);
+		$readmemb("../Coe_&_Asm/Block_Fall_with_keyctrl_2.coe",RAM);
 	end
 
 	always @(posedge clk ) begin
