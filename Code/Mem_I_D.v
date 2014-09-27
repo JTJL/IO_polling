@@ -36,7 +36,7 @@ module Mem_I_D(
 
 
 	initial begin
-		$readmemb("../Coe_&_Asm/Game_with_cmd_2.coe",RAM);
+		$readmemb("../Coe_&_Asm/Game_with_cmd.coe",RAM);
 	end
 
 	always @(posedge clk ) begin

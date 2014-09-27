@@ -268,7 +268,7 @@ N_CLR_Y_Inc:
 ##
 ###############################################
 Draw_Win:  										
-	addi 	$sp,	$sp,	-16
+	addi 	$sp,	$sp,	-20
 	sw 		$ra,	0x10($sp)
 	sw 		$t3,	0xc($sp)
 	sw 		$t2,	0x8($sp)
@@ -309,7 +309,7 @@ Loop_Draw_Col:
 	lw 		$t2,	0x8($sp)
 	lw 		$t3,	0xc($sp)
 	lw 		$ra,	0x10($sp)
-	addi	$sp,	$sp,	16
+	addi	$sp,	$sp,	20
 	jr 		$ra
 
 
