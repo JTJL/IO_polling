@@ -17,6 +17,7 @@
 	lui		$s2, 	0xc  						# VRam_addr
 	ori 	$s2,	$s2, 	0x101
 	ori 	$sp,	$zero,	0x4000				# Stack from 0x0000_4000 to 0x0000_0000
+	la 		$gp,	CMD_STR	
 	ori  	$t0,	$zero, 	0x27f				# 'A' ascii 
 	ori  	$t1,	$zero, 	0x27f				# 'B' ascii 
 
@@ -62,16 +63,20 @@ Load_Data:
 	bne 	$t1, 	$zero, 	N_SPACE
  	add 	$t2,	$zero,	$zero
  	j  		Print_Ascii
+
 N_SPACE:
 	addi 	$t1, 	$t2, 	-283				# ENTER Judge 
 	bne		$t1, 	$zero,  N_ENTER  	
+	jal 	CMD_CHECK
 	addi 	$t6, 	$zero,	-128 				# Set ffff_ff80
 	#andi 	$t5, 	$s2,	0x7f
 	and 	$s2, 	$s2,	$t6					# Enter
 	ori		$s2,	$s2,	0x4f 				# Set X at 79 (DEC_FORMAT)
 	#addi 	$s2, 	$s2,	0x100 				# Y + 1 	
 	addi 	$t2, 	$zero,	0x42d				# Write 2d RED'-' to the beginning of the line
-	j Print_Ascii								# We do not enter the next line, do it with "writing '-'"
+	la 		$gp, 	CMD_STR
+	j 		Print_Ascii								# We do not enter the next line, do it with "writing '-'"
+
 
 N_ENTER:
 	addi 	$t1, 	$t2, 	-285 				# BACKSPACE Judge
@@ -79,6 +84,7 @@ N_ENTER:
 	sw 		$zero,	0($s2)						# store blank
 	#beq 	$s2, 	$zero,	
 	addi 	$s2,	$s2,	-1 					# Addr X - 1 
+	addi 	$gp,	$gp, 	-4
 											
 N_BKSP:	
 	lw 		$ra, 	0($sp)						# load back $ra
@@ -125,19 +131,89 @@ Print_Ascii:
 	add 	$zero,	$zero, 	$zero	
 	jal 	TERIS_GAME
 Write_Screen:
+	sw 	 	$t2,	0($gp)
+	addi 	$gp,	$gp,	0x4
+	add 	$zero,	$zero, 	$zero
 	sw 		$t2, 	0($s2)						# Write Screen
 	add 	$zero,	$zero, 	$zero
 	lw 		$ra, 	0($sp)						# load back $ra
 	jr 		$ra
 
 
-##############
+######################################################
+##	Function Name: CMD_CHECK
+##
+##	Only TETRIS added.
+##
+##
+################################################
+CMD_CHECK:
+	addi 	$sp,	$sp,	-12
+	sw 		$ra,	0x00($sp)
+	sw	 	$t0,	0x04($sp)
+	sw	 	$t1,	0x08($sp)
+
+	la 		$gp,	CMD_STR
+	addi	$gp,	$gp, 	4
+	lw 		$t1,	0x0($gp)
+
+	addi	$t0,	$zero,	0x54 								# T
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+	addi	$gp,	$gp,	0x4
+	lw 		$t1,	0x0($gp)
+	addi	$t0,	$zero,	0x45 								# E
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+	addi	$gp,	$gp,	0x4
+	lw 		$t1,	0x0($gp)
+	addi	$t0,	$zero,	0x54								# T
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+	addi	$gp,	$gp,	0x4
+	lw 		$t1,	0x0($gp)
+	addi	$t0,	$zero,	0x52								# R
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+	addi	$gp,	$gp,	0x4
+	lw 		$t1,	0x0($gp)
+	addi	$t0,	$zero,	0x49								# I
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+	addi	$gp,	$gp,	0x4
+	lw 		$t1,	0x0($gp)
+	addi	$t0,	$zero,	0x53								# S
+	bne 	$t1,	$t0,	CMD_CHECK_RETURN
+	sw 	 	$zero, 	0x0($gp)
+
+	jal 	Clr_Screen
+	add 	$zero,	$zero,	$zero
+	jal 	Draw_Win 
+	add 	$zero,	$zero,	$zero
+	jal 	TERIS_GAME
+	add 	$zero,	$zero,	$zero
+
+CMD_CHECK_RETURN:
+
+	lw 		$t1,	0x08($sp)
+	lw 		$t0,	0x04($sp)
+	lw 		$ra,	0x00($sp)
+	addi 	$sp,	$sp,	12
+	jr	 	$ra
+
+
+
+
+
+
+
+##############################################
 ## 	Function: 	Clear Screen
 ##
 ## 	Parameter: 	None
 ##
 ## 	Return	: 	None
-##############
+##############################################
 Clr_Screen:			
 	addi 	$sp,	$sp, 	-28						# DEC_FORMAT
 	sw 		$ra,	0x18($sp)
@@ -169,7 +245,7 @@ N_CLR_Y_Inc:
 
 	lui 	$s2,	0xc
 
-	jal 	Draw_Win
+	#jal 	Draw_Win
 
 
 	lw		$t0,	0x0($sp)
@@ -183,7 +259,15 @@ N_CLR_Y_Inc:
 	add 	$zero, 	$zero,	$zero
 	jr		$ra
 
-Draw_Win:  											# Window limit X in [1F:2D], Y in [0E:2D]
+###############################################
+##	Function Name: Draw_Win
+##
+##	Window limit X in [1F:2D], Y in [0E:2D]
+##
+##
+##
+###############################################
+Draw_Win:  										
 	addi 	$sp,	$sp,	-16
 	sw 		$ra,	0x10($sp)
 	sw 		$t3,	0xc($sp)
@@ -196,7 +280,7 @@ Draw_Win:  											# Window limit X in [1F:2D], Y in [0E:2D]
 	lui		$t3,	0xc
 	ori		$t0,	$t0,	0x0d1e					# UpRow Addr
 	ori		$t1,	$t1,	0x2e1e					# DownRow Addr
-	ori		$t2,	$zero,	0x12d					# Char '-'
+	ori		$t2,	$zero,	0x22d					# Char '-'
 	ori		$t3,	$t3,	0x0d2f					# Row Limit
 Loop_Draw_Row:
 	sw		$t2,	0($t0)
@@ -211,7 +295,7 @@ Loop_Draw_Row:
 	lui 	$t3,	0xc
 	ori		$t0,	$t0,	0x0e1e					# RightColAddr
 	ori		$t1,	$t1,	0x0e2e					# LeftCol Addr 
-	ori		$t2,	$zero,	0x17c					# Char '|'	
+	ori		$t2,	$zero,	0x27c					# Char '|'	
 	ori		$t3,	$t3, 	0x2e1e					# Col_Limit
 Loop_Draw_Col:
 	sw		$t2,	0($t0)
@@ -254,7 +338,7 @@ Draw_Block:
 
 	andi 	$s0,	$a0,	0x100 
 	bne		$s0,	$zero, 	CLR_BLOCK 			# Clr block when a0[8] == 1, i.e. $s0(result of 'andi') != 0
-	ori 	$s0,	$zero,	0x27f				# Block(Green) to display
+	ori 	$s0,	$zero,	0x17f				# Block(Red) to display
 CLR_BLOCK:
 	ori 	$v0,	$zero,	0x1 				# Set return number to 1 <==> Failure
 	andi	$t0,	$a0, 	0x1c 				# To get pattern
@@ -616,8 +700,10 @@ DRAW_BLOCK_RETURN:
 ##
 ##############################################################
 TERIS_GAME:
-	addi 	$sp,	$sp,	-32
-	sw 		$s3,	0x1c($s0)
+	addi 	$sp,	$sp,	-40
+	sw 		$s2,	0x24($sp)
+	sw 		$s1,	0x20($sp)
+	sw 		$s3,	0x1c($sp)
 	sw		$t4,	0x18($sp)	
 	sw		$t3,	0x14($sp)	
 	sw		$t2,	0x10($sp)
@@ -626,7 +712,18 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x2							# Counter Init
+
+
+ 	la 		$s1,	Win_Line_U
+ 	add 	$s2,	$zero,	$zero
+ 	addi	$s3,	$zero, 	512
+ Loop_Clr_Win:
+ 	sw 		$zero, 	0($s1)
+ 	addi	$s1,	$s1,	4
+ 	addi	$s2,	$s2,	1
+ 	bne 	$s2,	$s3, 	Loop_Clr_Win 	
+
+	lui		$s1,	0x1							# Counter Init
 	lui		$s3,	0xc
 	addi	$s3,	$s3,	0xe1f
 
@@ -664,13 +761,15 @@ INGAME_NONE_ZERO_STATUS:
 	add 	$a1,	$a1,	$s3
 	jal		Draw_Block
 	sub 	$a1,	$a1,	$s3
+	jal 	Block_Fall
+	bne 	$v0,	$zero,	GAME_OVER
 N_NEXT_BLOCK:
 	la		$t0,	Block_Pattern
 	sw		$a0,	0($t0)
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x2
+	lui		$s1,	0x1
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -685,8 +784,10 @@ GAME_OVER:
 	lw		$t2,	0x10($sp)	
 	lw		$t3,	0x14($sp)	
 	lw		$t4,	0x18($sp)
-	lw 		$s3,	0x1c($s0)
-	addi 	$sp,	$sp,	32
+	lw 		$s3,	0x1c($sp)
+	lw 		$s1,	0x20($sp)
+	lw 		$s2,	0x24($sp)
+	addi 	$sp,	$sp,	40
 	jr 		$ra
 
 
@@ -1614,6 +1715,7 @@ Block_Fall_RETURN:
 	addi	$sp,	$sp,	32
 
 	jr		$ra
+
 	
 .data
 Ascii_code:
@@ -1753,6 +1855,30 @@ Block_Pattern:
 	.word 0x00000000
 Block_Addr:
 	.word 0x00000000
+CMD_STR:	
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+	.word 0x00000000
+
+
+
 Win_Line_U:
 	.word 0x00000000
 	.word 0x00000000

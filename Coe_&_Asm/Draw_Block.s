@@ -21,7 +21,7 @@ Draw_Block:
 
 	andi 	$s0,	$a0,	0x100 
 	bne		$s0,	$zero, 	CLR_BLOCK 			# Clr block when a0[8] == 1, i.e. $s0(result of 'andi') != 0
-	ori 	$s0,	$zero,	0x27f				# Block(Green) to display
+	ori 	$s0,	$zero,	0x47f				# Block(Red) to display
 CLR_BLOCK:
 	ori 	$v0,	$zero,	0x1 				# Set return number to 1 <==> Failure
 	andi	$t0,	$a0, 	0x1c 				# To get pattern

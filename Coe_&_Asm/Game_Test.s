@@ -7,8 +7,10 @@
 ##
 ##############################################################
 TERIS_GAME:
-	addi 	$sp,	$sp,	-32
-	sw 		$s3,	0x1c($s0)
+	addi 	$sp,	$sp,	-40
+	sw 		$s2,	0x24($sp)
+	sw 		$s1,	0x20($sp)
+	sw 		$s3,	0x1c($sp)
 	sw		$t4,	0x18($sp)	
 	sw		$t3,	0x14($sp)	
 	sw		$t2,	0x10($sp)
@@ -17,7 +19,18 @@ TERIS_GAME:
 	sw 		$s0,	0x4($sp)
 	sw 		$ra,	0x0($sp)
 
-	lui		$s1,	0x2							# Counter Init
+
+
+ 	la 		$s1,	Win_Line_U
+ 	add 	$s2,	$zero,	$zero
+ 	addi	$s3,	$zero, 	512
+ Loop_Clr_Win:
+ 	sw 		$zero, 	0($s1)
+ 	addi	$s1,	$s1,	4
+ 	addi	$s2,	$s2,	1
+ 	bne 	$s2,	$s3, 	Loop_Clr_Win 	
+
+	lui		$s1,	0x1							# Counter Init
 	lui		$s3,	0xc
 	addi	$s3,	$s3,	0xe1f
 
@@ -55,13 +68,15 @@ INGAME_NONE_ZERO_STATUS:
 	add 	$a1,	$a1,	$s3
 	jal		Draw_Block
 	sub 	$a1,	$a1,	$s3
+	jal 	Block_Fall
+	bne 	$v0,	$zero,	GAME_OVER
 N_NEXT_BLOCK:
 	la		$t0,	Block_Pattern
 	sw		$a0,	0($t0)
 
 	la 		$t0,	Block_Addr 						# Relative address
 	sw 		$a1,	0($t0)
-	lui		$s1,	0x2
+	lui		$s1,	0x1
 N_Fall:
  	bne	    $zero,	$zero,	GAME_OVER
  	add 	$zero,	$zero,	$zero
@@ -76,8 +91,10 @@ GAME_OVER:
 	lw		$t2,	0x10($sp)	
 	lw		$t3,	0x14($sp)	
 	lw		$t4,	0x18($sp)
-	lw 		$s3,	0x1c($s0)
-	addi 	$sp,	$sp,	32
+	lw 		$s3,	0x1c($sp)
+	lw 		$s1,	0x20($sp)
+	lw 		$s2,	0x24($sp)
+	addi 	$sp,	$sp,	40
 	jr 		$ra
 
 
