@@ -10,6 +10,8 @@
 *.MP4
 *.pdf
 *.PDF
+*.zip
+*.ZIP
 Teris_On_Cpu/
 IO_polling/
 
