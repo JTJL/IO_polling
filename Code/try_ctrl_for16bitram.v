@@ -21,21 +21,25 @@ module            ctrl(
                             PCSource,
                             PCWrite,
                             PCWriteCond,
-                            Beq
+                            Beq,
+                            Half_W
                             );
-    input clk, reset;
-    input zero, overflow, MIO_ready;
-    input [31:0] Inst_in;
-    output [2:0] ALU_operation;
-    output CPU_MIO, MemRead, MemWrite, IorD, IRWrite, RegWrite, ALUSrcA, PCWrite, PCWriteCond, Beq;
-    output [ 4: 0] state_out;
-    output [ 1: 0] RegDst, MemtoReg, ALUSrcB, PCSource;
-    wire   [ 4: 0] state_out;
-    wire   reset, MIO_ready;
-    reg    CPU_MIO  = 0, MemRead = 0, MemWrite = 0, IorD = 0, IRWrite = 0, RegWrite = 0, ALUSrcA = 0, PCWrite = 1, PCWriteCond = 0, Beq = 0;
-    reg       [ 1: 0] RegDst = 0, MemtoReg = 0, ALUSrcB = 0, PCSource = 0;
-    reg    [2:0] ALU_operation = 0;
-    reg       [4:0] state = 0;
+
+    input           clk, reset;
+    input           zero, overflow, MIO_ready;
+    input   [31: 0] Inst_in;
+    output  [ 2: 0] ALU_operation;
+    output          CPU_MIO, MemRead, MemWrite, IorD, IRWrite, RegWrite, ALUSrcA, PCWrite, PCWriteCond, Beq, Half_W;
+    output  [ 4: 0] state_out;
+    output  [ 1: 0] RegDst, MemtoReg, ALUSrcB, PCSource;
+
+    wire    [ 4: 0] state_out;
+    wire            reset, MIO_ready;
+    
+    reg     [ 4: 0] state = 0;
+    reg     [ 2: 0] ALU_operation = 0;
+    reg     [ 1: 0] RegDst = 0, MemtoReg = 0, ALUSrcB = 0, PCSource = 0;
+    reg             CPU_MIO  = 0, MemRead = 0, MemWrite = 0, IorD = 0, IRWrite = 0, RegWrite = 0, ALUSrcA = 0, PCWrite = 1, PCWriteCond = 0, Beq = 0, Half_W = 0;
 
     parameter  IF       = 5'b00000,
 			   ID       = 5'b00001,
@@ -72,10 +76,10 @@ module            ctrl(
 	
 	initial begin
 		`CPU_ctrl_signals <= 17'h12821;
-		ALU_operation 		<=	ADD; 
+		ALU_operation     <= ADD; 
 	end
 	
-    always @ (posedge clk or posedge reset)
+    always @ (posedge clk or posedge reset) begin
         if ( reset == 1 ) begin
             `CPU_ctrl_signals <= 17'h12821; //12821
             ALU_operation <= ADD;
@@ -125,6 +129,18 @@ module            ctrl(
                                 default: ALU_operation <= ADD;
                             endcase
                         end
+                        /*
+                        6'b100001 : begin                       // Lh
+                            `CPU_ctrl_signals <= 17'h00050;     // To Calculate the address
+                            ALU_operation <= ADD;
+                            state <= EX_Mem;
+                        end
+                        6'b101001 : begin                       // Sh
+                            `CPU_ctrl_signals <= 17'h00050;
+                            ALU_operation <= ADD;
+                            state <= EX_Mem;
+                        end
+                        */
                         6'b100011 : begin                       // Lw
                             `CPU_ctrl_signals <= 17'h00050;
                             ALU_operation <= ADD;
@@ -193,97 +209,112 @@ module            ctrl(
                     endcase
                 end //end ID
                 EX_Mem: begin
-                    if ( Inst_in[31:26] == 6'b100011 ) begin
-                        `CPU_ctrl_signals <= 17'h06051;
-                                state <= MEM_RD;
+                    if ( Inst_in[31:26] == 6'b100011 ) begin                // Lw
+                        `CPU_ctrl_signals <= 17'h06051; 
+                        state <= MEM_RD;
                     end
-                    else if ( Inst_in[31:26] == 6'b101011 ) begin
+                    else if ( Inst_in[31:26] == 6'b101011 ) begin           // Sw
                         `CPU_ctrl_signals <= 17'h05051;
-                                state <= MEM_WD;
+                        state <= MEM_WD;
+                    end
+                    /*
+                    else if ( Inst_in[31:26] == 6'b100001 ) begin           // Lh
+                        `CPU_ctrl_signals <= 17'h06051;
+                        state <= MEM_RD;
+                        Half_W <= 1;
+                    end
+                    else if ( Inst_in[31:26] == 6'b101001 ) begin           // Sh
+                        `CPU_ctrl_signals <= 17'h05051;
+                        state <= MEM_WD;
+                        Half_W <= 1; 
+                    end 
+                    */
+                end
+                MEM_RD: begin
+                    if ( MIO_ready ) begin
+                        `CPU_ctrl_signals <= 17'h00208;
+                        state <= WB_LW;
+                    end
+                    else begin
+                        state <= MEM_RD;
+                        `CPU_ctrl_signals <= 17'h06050;
+                        Half_W <= ~Inst_in[27];
                     end
                 end
-            MEM_RD: begin
-                if ( MIO_ready ) begin
-                    `CPU_ctrl_signals <= 17'h00208;
-                          state <= WB_LW;
+                MEM_WD: begin
+                    if ( MIO_ready ) begin
+                        `CPU_ctrl_signals <= 17'h12821;
+                        ALU_operation <= ADD;
+                        state <= IF;
+                    end
+                    else begin
+                        state <= MEM_WD;
+                        `CPU_ctrl_signals <= 17'h05050;
+                        Half_W <= ~Inst_in[27];
+                    end
                 end
-                else begin
-                    state <= MEM_RD;
-                    `CPU_ctrl_signals <= 17'h06050;
-                end
-            end
-            MEM_WD: begin
-                if ( MIO_ready ) begin
+                WB_LW: begin
                     `CPU_ctrl_signals <= 17'h12821;
                     ALU_operation <= ADD;
                     state <= IF;
                 end
-                else begin
-                    state <= MEM_WD;
-                    `CPU_ctrl_signals <= 17'h05050;
+                EX_R: begin
+                    `CPU_ctrl_signals <= 17'h0001a;
+                    state <= WB_R;
                 end
-            end
-            WB_LW: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            EX_R: begin
-                `CPU_ctrl_signals <= 17'h0001a;
-                state <= WB_R;
-            end
-            EX_I: begin
-                `CPU_ctrl_signals <= 17'h00058;
-                state <= WB_I;
-            end
-            WB_R: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            WB_I: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            Exe_J: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            EX_bne: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            EX_beq: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            EX_jr: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            EX_JAL: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            Lui_WB: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                ALU_operation <= ADD;
-                state <= IF;
-            end
-            Error:
-                state <= Error;
-            default: begin
-                `CPU_ctrl_signals <= 17'h12821;
-                     Beq <= 0;
-                ALU_operation <= ADD;
-                state <= Error;
-            end
-        endcase
+                EX_I: begin
+                    `CPU_ctrl_signals <= 17'h00058;
+                    state <= WB_I;
+                end
+                WB_R: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                WB_I: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                Exe_J: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                EX_bne: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                EX_beq: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                EX_jr: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                EX_JAL: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                Lui_WB: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                    ALU_operation <= ADD;
+                    state <= IF;
+                end
+                Error:
+                    state <= Error;
+                default: begin
+                    `CPU_ctrl_signals <= 17'h12821;
+                         Beq <= 0;
+                    ALU_operation <= ADD;
+                    state <= Error;
+                end
+            endcase
+        end
     end
 endmodule

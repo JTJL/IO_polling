@@ -43,7 +43,6 @@ module Top_Muliti_IOBUS(
     wire 		   	CPU_MIO;
 	wire 		   	ps2_ready;
     wire           	ps2_rd;
-    wire            Byte_Sel, Half_W;
 	wire   	[ 1: 0] Counter_set;
     wire   	[ 4: 0] state;
     wire   	[ 3: 0] digit_anode, blinke;
@@ -118,7 +117,6 @@ module Top_Muliti_IOBUS(
                                 .Inst           (Inst), //Test
                                 .mem_w          (mem_w),
                                 .Addr_out       (addr_bus),
-                                .Half_W         (Half_W),
                                 .data_out       (Cpu_data2bus),
                                 .data_in        (Cpu_data4bus),
                                 .CPU_MIO        (CPU_MIO),
@@ -129,8 +127,6 @@ module Top_Muliti_IOBUS(
                                 .clk           	(clk_m),
                                 .W_En           (data_ram_we),
                                 .Addr          	(ram_addr),
-                                .Byte_Sel       (Byte_Sel),
-                                .Half_W         (Half_W),
                                 .D_In           (ram_data_in),
                                 .D_Out          (ram_data_out)
                                 ); // Addre_Bus [9 : 0] ,Data_Bus [31 : 0]
@@ -163,7 +159,6 @@ module Top_Muliti_IOBUS(
 								.data_ram_we    (data_ram_we),
                                 .addr_bus       (addr_bus),
                                 .ram_data_out   (ram_data_out),
-                                .Byte_Sel       (Byte_Sel),
 
 								.Vram_W_En		(Vram_W_En),					// Vga Logic
 								.Vram_W_Addr_x_y(Vram_W_Addr_x_y),

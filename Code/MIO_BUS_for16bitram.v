@@ -25,6 +25,7 @@ module MIO_BUS(clk,
 				ram_data_in,									// From CPU write to Memory
 				ram_addr,										// Memory Address signals
 				data_ram_we,									// Ram_Write_Enable
+				Byte_Sel,										// Byte Address	
 
 																// GPIO_Info
 				GPIOf0000000_we,
@@ -62,9 +63,11 @@ module MIO_BUS(clk,
 						ram_data_in 	= 0,
 						Peripheral_in 	= 0;
 	output reg 	[12: 0] ram_addr 		= 0;
+	output reg 			Byte_Sel 		= 0;
 
 	// Vram_Info
 	output reg			Vram_W_En 		= 0;
+
 	output reg  [10: 0] Vram_W_Data		= 0;
 	output reg  [13: 0] Vram_W_Addr_x_y	= 0;
 
@@ -85,12 +88,14 @@ module MIO_BUS(clk,
 		Vram_W_En						= 0;
 		Vram_W_Addr_x_y					= 13'h0;
 		Vram_W_Data 					= 8'b0;
+		Byte_Sel						= 0;
 		casex ( addr_bus[31: 8] )
 			24'h0000_xx : begin											// 24'h0000_00XX   Instruction
 				data_ram_we 			= mem_w;
 				ram_addr 				= addr_bus[14: 2];					// For stack data, 0x0000_4000 -> Down
 				ram_data_in 			= Cpu_data2bus;						// Instructions from [11: 2] 10bits
 				Cpu_data4bus 			= ram_data_out;
+				Byte_Sel				= addr_bus[1];
 			end
 
 			24'h000c_xx : begin												// 32'h000c_xxxx Word Addr bus_addr[13: 0] for Vram

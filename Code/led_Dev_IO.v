@@ -18,7 +18,7 @@ module led_Dev_IO(  clk,
 
     assign led_out = LED;
 
-    always @( negedge clk or posedge rst ) begin
+    always @( negedge clk /*or posedge rst */) begin
         if( rst ) begin
             LED <= 8'hAA;
             counter_set <= 2'b00;

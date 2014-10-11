@@ -23,7 +23,7 @@ module seven_seg_Dev_IO(
 	output reg 	[31: 0] disp_num = 0;
 
 	// 7 Segments LEDs write & CPU state display
-	always @(negedge clk or posedge rst) begin
+	always @(negedge clk /*or posedge rst*/) begin
 		if(rst)
 			disp_num <= 32'hAA5555AA;
 		else begin
