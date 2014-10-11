@@ -15,7 +15,8 @@
 Tetris_On_Cpu/
 Tetris_On_16bitram/
 IO_polling/
-
+*.exe
+*.cpp
 
 
 #################
