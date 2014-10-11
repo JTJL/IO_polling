@@ -12,7 +12,8 @@
 *.PDF
 *.zip
 *.ZIP
-Teris_On_Cpu/
+Tetris_On_Cpu/
+Tetris_On_16bitram/
 IO_polling/
 
 
