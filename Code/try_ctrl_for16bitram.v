@@ -129,7 +129,6 @@ module            ctrl(
                                 default: ALU_operation <= ADD;
                             endcase
                         end
-                        /*
                         6'b100001 : begin                       // Lh
                             `CPU_ctrl_signals <= 17'h00050;     // To Calculate the address
                             ALU_operation <= ADD;
@@ -139,8 +138,7 @@ module            ctrl(
                             `CPU_ctrl_signals <= 17'h00050;
                             ALU_operation <= ADD;
                             state <= EX_Mem;
-                        end
-                        */
+                        end                    
                         6'b100011 : begin                       // Lw
                             `CPU_ctrl_signals <= 17'h00050;
                             ALU_operation <= ADD;
@@ -217,7 +215,6 @@ module            ctrl(
                         `CPU_ctrl_signals <= 17'h05051;
                         state <= MEM_WD;
                     end
-                    /*
                     else if ( Inst_in[31:26] == 6'b100001 ) begin           // Lh
                         `CPU_ctrl_signals <= 17'h06051;
                         state <= MEM_RD;
@@ -228,12 +225,12 @@ module            ctrl(
                         state <= MEM_WD;
                         Half_W <= 1; 
                     end 
-                    */
                 end
                 MEM_RD: begin
                     if ( MIO_ready ) begin
                         `CPU_ctrl_signals <= 17'h00208;
                         state <= WB_LW;
+                        Half_W <= 0;
                     end
                     else begin
                         state <= MEM_RD;
@@ -246,6 +243,7 @@ module            ctrl(
                         `CPU_ctrl_signals <= 17'h12821;
                         ALU_operation <= ADD;
                         state <= IF;
+                        Half_W <= 0;
                     end
                     else begin
                         state <= MEM_WD;
