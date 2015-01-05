@@ -64,3 +64,9 @@ NET "B[1]" LOC = "T7" | IOSTANDARD = "LVCMOS33"; # Bank = 2, pin name = IO_L46N,
 
 NET "H_SYNC" LOC = "N6" | IOSTANDARD = "LVCMOS33"; # Bank = 2, pin name = IO_L47P, Sch name = HSYNC
 NET "V_SYNC" LOC = "P7" | IOSTANDARD = "LVCMOS33"; # Bank = 2, pin name = IO_L47N, Sch name = VSYNC
+
+
+
+# uart port
+Net "uart_tx" LOC = "N18"  |  IOSTANDARD = "LVCMOS33";
+Net "uart_rx" LOC = "N17"  |  IOSTANDARD = "LVCMOS33";

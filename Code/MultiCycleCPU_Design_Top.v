@@ -13,7 +13,9 @@ module Top_Muliti_IOBUS(
 						G,
 						B,
 						H_SYNC,
-						V_SYNC
+						V_SYNC,
+                        uart_rx,
+                        uart_tx
                         );
 
     input 			clk_50mhz;
@@ -27,7 +29,8 @@ module Top_Muliti_IOBUS(
 	input 		   	KEYBOARD_DATA;
 
 	// LED and Segment Interface
-	output 	[ 7: 0] LED, SEGMENT;
+	output 	[ 7: 0] LED;
+    output reg [ 7: 0] SEGMENT;
     output 	[ 3: 0] AN_SEL;
 
 	// VGA Interface
@@ -35,8 +38,12 @@ module Top_Muliti_IOBUS(
 	output 	[ 1: 0] B;
 	output         	H_SYNC;
     output         	V_SYNC;
+    
+    // UART Signal
+    input           uart_rx;
+    output          uart_tx;
 
-
+    parameter       default_divisor = 8'd52;
     wire 		   	Clk_CPU, rst, clk_m, mem_w, data_ram_we, GPIOf0000000_we, GPIOe0000000_we, counter_we;
     wire 		   	counter_OUT0, counter_OUT1, counter_OUT2;
     wire 		   	MIO_ready;
@@ -70,24 +77,68 @@ module Top_Muliti_IOBUS(
 	wire 	[13: 0]	Vram_W_Addr_x_y;
 
 
-
+    // uart wire 
+    wire    [ 7: 0] rx_value;
+    wire            rx_done;
+    
     assign MIO_ready	= ~button_out[1];
     assign rst		    = button_out[3];
 
     assign SW2 		   	= SW_OK[2];
-    assign LED 	      	= {led_out[7]|Clk_CPU,led_out[6:0]};
+    assign LED 	      	= {rx_done, led_out[6:0]};//{led_out[7]|Clk_CPU,led_out[6:0]};
     assign clk_m 		= ~clk_50mhz;
     assign AN_SEL       = digit_anode;
     assign clk_io 	   	= ~Clk_CPU;
-
+    
+    // uart_testing  ======================================================
+    assign uart_tx      = uart_rx;
+    assign digit_anode  = 4'h0;
+    always @( posedge clk_50mhz ) begin
+        
+    end
+    
+    always @(*) begin
+        case ( rx_value[ 3: 0] )
+            4'h0: SEGMENT = 8'b11000000;
+			4'h1: SEGMENT = 8'b11111001;
+			4'h2: SEGMENT = 8'b10100100;
+			4'h3: SEGMENT = 8'b10110000;
+			4'h4: SEGMENT = 8'b10011001;
+			4'h5: SEGMENT = 8'b10010010;
+			4'h6: SEGMENT = 8'b10000010;
+			4'h7: SEGMENT = 8'b11111000;
+			4'h8: SEGMENT = 8'b10000000;
+			4'h9: SEGMENT = 8'b10010000;
+			4'hA: SEGMENT = 8'b10001000;
+			4'hB: SEGMENT = 8'b10000011;
+			4'hC: SEGMENT = 8'b11000110;
+			4'hD: SEGMENT = 8'b10100001;
+			4'hE: SEGMENT = 8'b10000110;
+			4'hF: SEGMENT = 8'b10001110;
+            default: SEGMENT = 8'b1111_1111;
+        endcase 
+    end  
+    uart_transceiver   transceiver(
+                                .sys_clk(clk_50mhz),
+                                .sys_rst(rst),
+                                .uart_rx(uart_rx),
+                                .uart_tx(),
+                                .divisor(default_divisor),
+                                .rx_data(rx_value),
+                                .rx_done(rx_done),
+                                .tx_data(8'h0),
+                                .tx_wr(0),
+                                .tx_done()
+                                );
+    // =======================================================================
     seven_seg_dev      seven_seg(
                                 .disp_num			(disp_num),
                                 .clk				(clk_50mhz),
                                 .clr				(rst),
                                 .SW					(SW_OK[1:0]),
                                 .Scanning			(clkdiv[19:18]),
-                                .SEGMENT			(SEGMENT),
-                                .AN					(digit_anode)
+                                .SEGMENT			(),//(SEGMENT),
+                                .AN					() //(digit_anode)
                                 );
 
     BTN_Anti_jitter     BTN_OK(
