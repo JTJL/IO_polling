@@ -15,7 +15,7 @@ module Coprocessor(
 	epc_o
 );
 
-// ================ io interface
+// ================ IO interface
 	input clk, rst;
 	input wire 	[31: 0] c0_w_data, pc_i;
 	input wire 	[ 4: 0] c0_rd_addr, c0_wr_addr;
