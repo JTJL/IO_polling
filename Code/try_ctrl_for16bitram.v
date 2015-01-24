@@ -220,6 +220,12 @@ module            ctrl(
                         state <= MEM_RD;
                         Half_W <= 1;
                     end
+                    else if ( Inst_in[31:26] == 6'b100101 ) begin 			// Lhu
+                    	`CPU_ctrl_signals <= 17'h06051;
+                        state <= MEM_RD;
+                        Half_W <= 1;
+                        Signed <= 1;
+                    end
                     else if ( Inst_in[31:26] == 6'b101001 ) begin           // Sh
                         `CPU_ctrl_signals <= 17'h05051;
                         state <= MEM_WD;
